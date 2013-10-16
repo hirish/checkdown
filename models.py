@@ -1,4 +1,5 @@
 from config import db
+import json
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -19,8 +20,18 @@ class User(db.Model):
         self.username = username
         self.email = email
 
+    def dictify(self):
+        return {
+            'id' : self.id,
+            'username' : self.username,
+            'email' : self.email
+        }
+
+    def json(self):
+        return json.dumps(self.dictify())
+
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '[User %r]' % self.username
 
 
 class Debt(db.Model):
@@ -46,12 +57,26 @@ class Debt(db.Model):
         self.amount = amount
         self.paid = False
 
+    def dictify(self):
+        return {
+            'id' : self.id,
+            'debtor' : self.debtor.dictify(),
+            'lender' : self.lender.dictify(),
+            'amount' : self.amount,
+            'paid' : self.paid,
+            'created' : str(self.created),
+            'description' : self.description,
+        }
+
+    def json(self):
+        return json.dumps(self.dictify())
+
     def __repr__(self):
         if self.paid:
-            return "<Debt: %s owed %s %i>" % (self.debtor,
+            return "[Debt: %s owed %s %i]" % (self.debtor,
                                               self.lender,
                                               self.amount)
         else:
-            return "<Debt: %s owes %s %i>" % (self.debtor,
+            return "[Debt: %s owes %s %i]" % (self.debtor,
                                               self.lender,
                                               self.amount)
