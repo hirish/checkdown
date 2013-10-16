@@ -1,4 +1,4 @@
-from flask import request
+from flask import abort, request
 from models import User, Debt 
 from config import app, db
 import json
@@ -15,6 +15,7 @@ def get_users():
 
 @app.route('/debts')
 def get_debts():
+    abort(500)
     debts = Debt.query.all()
     return json.dumps({'debts': [ debt.dictify() for debt in debts ] })
 
@@ -78,6 +79,11 @@ def create_debt():
     db.session.commit()
 
     return new_debt.json()
+
+@app.errorhandler(500)
+def fail(error):
+    app.logger.error('Bad times: %s', error)
+    return app.send_static_file('500.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
