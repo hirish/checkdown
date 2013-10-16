@@ -3,8 +3,19 @@
 	<head>
 		<meta charset="utf-8">
 		<title>CheckDown</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="/js/debt_bubbles.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$.get('/user/1/debt').done(function(debts) {
+					$('#debt-bubbles').html(debt_bubbles(debts));
+				});
+			});
+		</script>
 	</head>
 	<body>
 		La index.
+		<div id="debt-bubbles"></div>
 	</body>
 </html>
