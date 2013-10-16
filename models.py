@@ -13,8 +13,13 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True)
 
-    debts = db.relationship('Debt', backref='debtor', foreign_keys='Debt.debtor_id')
-    loans = db.relationship('Debt', backref='lender', foreign_keys='Debt.lender_id')
+    debts = db.relationship('Debt',
+                            backref='debtor',
+                            foreign_keys='Debt.debtor_id')
+
+    loans = db.relationship('Debt',
+                            backref='lender',
+                            foreign_keys='Debt.lender_id')
 
     def __init__(self, username, email):
         self.username = username
@@ -45,10 +50,10 @@ class Debt(db.Model):
 
     def __repr__(self):
         if self.paid:
-            return "<Debt: %i owed %i %i>" % (self.debtor,
+            return "<Debt: %s owed %s %i>" % (self.debtor,
                                               self.lender,
                                               self.amount)
         else:
-            return "<Debt: %i owes %i %i>" % (self.debtor,
+            return "<Debt: %s owes %s %i>" % (self.debtor,
                                               self.lender,
                                               self.amount)
