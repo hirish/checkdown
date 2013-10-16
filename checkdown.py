@@ -17,7 +17,7 @@ def index():
 def get_user_debts(user_id):
     debtor = User.query.get(user_id)
     debts = Debt.query.filter_by(debtor=debtor).order_by(Debt.created)
-    return debts.stringify
+    return debts.all()
 
 
 if __name__ == '__main__':
