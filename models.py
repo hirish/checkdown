@@ -51,10 +51,11 @@ class Debt(db.Model):
 
     description = db.Column(db.String(300))
 
-    def __init__(self, debtor, lender, amount):
+    def __init__(self, debtor, lender, amount, description):
         self.debtor = debtor
         self.lender = lender
         self.amount = amount
+        self.description = description
         self.paid = False
 
     def dictify(self):

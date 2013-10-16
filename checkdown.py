@@ -42,5 +42,31 @@ def create_user():
 
     return new_user.json()
 
+@app.route('/create/debt', methods=['POST'])
+def create_debt():
+    debtor_id = int(request.form['debtor_id'])
+    lender_id = int(request.form['lender_id'])
+
+    debtor = User.query.get(debtor_id)
+    lender = User.query.get(lender_id)
+
+    amount = int(request.form['amount'])
+    if amount == 0:
+      return 'Amount is 0.'
+    elif amount < 0:
+      return 'Amount cannot be less than 0.'
+
+    description = request.form['description']
+    description = description.strip()
+
+    if len(description) == 0:
+      return 'Decription cannot be empty.'
+
+    new_debt = Debt(debtor, lender, amount, description)
+    db.session.add(new_debt)
+    db.session.commit()
+
+    return new_debt.json()
+
 if __name__ == '__main__':
     app.run(debug=True)
