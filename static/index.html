@@ -5,6 +5,20 @@
 		<title>CheckDown</title>
 	</head>
 	<body>
-		La index.
+  <h1>La index.</h1>
+  <h2>Create New User</h2>
+  <form action="/create/user" method="GET">
+    <input name="username" type="text" placeholder="username" />
+    <input type="submit" />
+  </form>
+  <h2>Create New Debt</h2>
+  <form action="/create/debt" method="GET">
+    <input name="lender_id" type="text" placeholder="Lender ID" />
+    <input name="debtor_id" type="text" placeholder="Debtor ID" /><br />
+
+    <input name="amount" type="text" placeholder="Amount" />
+
+    <input type="submit" />
+  </form>
 	</body>
 </html>
