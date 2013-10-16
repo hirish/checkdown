@@ -1,4 +1,4 @@
-from flask import abort, request
+from flask import abort, request, render_template
 from models import User, Debt 
 from config import app, db
 import json
@@ -55,34 +55,40 @@ def create_user():
 
 @app.route('/create/debt', methods=['POST'])
 def create_debt():
-    debtor_id = int(request.form['debtor_id'])
-    lender_id = int(request.form['lender_id'])
+    try:
+        debtor_id = int(request.form['debtor_id'])
+        lender_id = int(request.form['lender_id'])
 
-    debtor = User.query.get(debtor_id)
-    lender = User.query.get(lender_id)
+        debtor = User.query.get(debtor_id)
+        lender = User.query.get(lender_id)
 
-    amount = int(request.form['amount'])
-    if amount == 0:
-      return 'Amount is 0.'
-    elif amount < 0:
-      return 'Amount cannot be less than 0.'
+        amount = int(request.form['amount'])
+        if amount == 0:
+          return 'Amount is 0.'
+        elif amount < 0:
+          return 'Amount cannot be less than 0.'
 
-    description = request.form['description']
-    description = description.strip()
+        description = request.form['description']
+        description = description.strip()
 
-    if len(description) == 0:
-      return 'Decription cannot be empty.'
+        if len(description) == 0:
+          raise Exception('Decription cannot be empty.')
 
-    new_debt = Debt(debtor, lender, amount, description)
-    db.session.add(new_debt)
-    db.session.commit()
+        new_debt = Debt(debtor, lender, amount, description)
+        db.session.add(new_debt)
+        db.session.commit()
 
-    return new_debt.json()
+        return new_debt.json()
+    except Exception as e:
+        app.logger.error(e)
+        abort(500)
 
+@app.errorhandler(404)
 @app.errorhandler(500)
 def fail(error):
-    app.logger.error('Bad times: %s', error)
-    return app.send_static_file('500.html')
+    colours = {404: "#036", 500: "#900"}
+    colour = colours.get(error.code, "#000")
+    return render_template('error.html', error=error.code, colour=colour), error.code
 
 if __name__ == '__main__':
     app.run(debug=True)
