@@ -24,9 +24,9 @@ def get_user_debts(user_id):
     debts = Debt.query.filter_by(debtor=debtor).order_by(Debt.created)
     return json.dumps({'debts': [ debt.dictify() for debt in debts.all() ]})
 
-@app.route('/create/user')
+@app.route('/create/user', methods=['POST'])
 def create_user():
-    username = request.args['username']
+    username = request.form['username']
     username = username.strip()
 
     if len(username) == 0:
@@ -41,7 +41,6 @@ def create_user():
     db.session.commit()
 
     return new_user.json()
-
 
 if __name__ == '__main__':
     app.run(debug=True)
