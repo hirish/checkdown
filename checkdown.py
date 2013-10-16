@@ -1,12 +1,6 @@
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
 from models import User, Debt 
+from config import app, db
 import json
-
-#app = Flask(__name__)
-app = Flask(__name__, static_folder='static', static_url_path='')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
