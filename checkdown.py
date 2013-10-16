@@ -15,7 +15,6 @@ def get_users():
 
 @app.route('/debts')
 def get_debts():
-    abort(500)
     debts = Debt.query.all()
     return json.dumps({'debts': [ debt.dictify() for debt in debts ] })
 
