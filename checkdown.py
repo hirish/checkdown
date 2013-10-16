@@ -1,18 +1,21 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from models import User, Debt, 
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120), unique=True)
+@app.route('/')
+def index():
+    return 'Us teabagging Billsup.\n\nASCII-art coming soon.'
 
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
+@app.route('/user/<user_id>/debt')
+def get_user_debts(user_id):
+    debts = Debt.query.filter_by(debter=user_id).order_by(Debt.created)
+    return json.dumps(debts)
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+
+if __name__ == '__main__':
+    app.run(debug=True)
