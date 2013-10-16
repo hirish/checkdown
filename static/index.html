@@ -1,21 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>CheckDown</title>
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<script src="http://d3js.org/d3.v3.min.js"></script>
-		<script src="/js/debt_bubbles.js"></script>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$.get('/user/1/debt').done(function(debts) {
-					$('#debt-bubbles').html(debt_bubbles(debts));
-				});
-			});
-		</script>
-	</head>
-	<body>
-		La index.
-		<div id="debt-bubbles"></div>
-	</body>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org" />
+  <meta charset="utf-8" />
+
+  <title>CheckDown</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type=
+  "text/javascript">
+</script>
+  <script src="http://d3js.org/d3.v3.min.js" type="text/javascript">
+</script>
+  <script src="/js/debt_bubbles.js" type="text/javascript">
+</script>
+  <script type="text/javascript">
+	$(document).ready(function() {
+		$.get('/user/1/debt').done(function(debts) {
+			$('#debt-bubbles').html(debt_bubbles(debts));
+		});
+	});
+  </script>
+</head>
+
+<body>
+  La index.
+
+  <div id="debt-bubbles"></div>
+
+  <h1>La index.</h1>
+
+  <h2>Create New User</h2>
+
+  <form action="/create/user" method="post">
+    <input name="username" type="text" placeholder="username" /> <input type="submit" />
+  </form>
+
+  <h2>Create New Debt</h2>
+
+  <form action="/create/debt" method="post">
+    <input name="lender_id" type="text" placeholder="Lender ID" /> <input name=
+    "debtor_id" type="text" placeholder="Debtor ID" /><br />
+    <input name="amount" type="text" placeholder="Amount" /><br />
+    <input name="description" type="text" placeholder="Description" /> <input type=
+    "submit" />
+  </form>
+</body>
 </html>
