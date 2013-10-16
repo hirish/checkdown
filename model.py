@@ -7,9 +7,14 @@ db = SQLAlchemy(app)
 
 
 class User(db.Model):
+    __tablename__ = 'user'
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True)
+
+    debts = db.relationship('Debt', backref='debtor', foreign_keys='Debt.debtor_id')
+    loans = db.relationship('Debt', backref='lender', foreign_keys='Debt.lender_id')
 
     def __init__(self, username, email):
         self.username = username
@@ -20,9 +25,12 @@ class User(db.Model):
 
 
 class Debt(db.Model):
+    __tablename__ = 'debt'
+
     id = db.Column(db.Integer, primary_key=True)
-    debtor = db.Column(db.Integer)
-    lender = db.Column(db.Integer)
+
+    debtor_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    lender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     # Stored as no. cents
     amount = db.Column(db.Integer)
