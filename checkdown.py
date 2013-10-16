@@ -25,15 +25,13 @@ def get_user(user_id):
 
 @app.route('/user/<user_id>/debts')
 def get_user_debts(user_id):
-    debtor = User.query.get(user_id)
-    debts = Debt.query.filter_by(debtor=debtor).order_by(Debt.created)
-    return json.dumps({'debts': [ debt.dictify() for debt in debts.all() ]})
+    debts = User.query.get(user_id).debts
+    return json.dumps({'debts': [ debt.dictify() for debt in debts ]})
 
 @app.route('/user/<user_id>/loans')
 def get_user_loans(user_id):
-    lender = User.query.get(user_id)
-    loans = Debt.query.filter_by(lender=lender).order_by(Debt.created)
-    return json.dumps({'loans': [ loan.dictify() for loan in loans.all() ]})
+    loans = User.query.get(user_id).loans
+    return json.dumps({'loans': [ loan.dictify() for loan in loans ]})
 
 @app.route('/create/user', methods=['POST'])
 def create_user():
