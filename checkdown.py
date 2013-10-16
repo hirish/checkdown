@@ -16,7 +16,7 @@ def get_user(user_id):
 def get_user_debts(user_id):
     debtor = User.query.get(user_id)
     debts = Debt.query.filter_by(debtor=debtor).order_by(Debt.created)
-    return str(debts)
+    return json.dumps({'debts': [ debt.dictify() for debt in debts.all() ]})
 
 
 if __name__ == '__main__':
