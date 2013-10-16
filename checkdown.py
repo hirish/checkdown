@@ -37,21 +37,25 @@ def get_user_loans(user_id):
 
 @app.route('/create/user', methods=['POST'])
 def create_user():
-    username = request.form['username']
-    username = username.strip()
+    try:
+        username = request.form['username']
+        username = username.strip()
 
-    if len(username) == 0:
-        return "Failed, username empty."
+        if len(username) == 0:
+            raise Exception("Failed, username empty.")
 
-    conflicts = User.query.filter_by(username=username).all()
-    if len(conflicts) > 0:
-        return "Failed, username already taken."
+        conflicts = User.query.filter_by(username=username).all()
+        if len(conflicts) > 0:
+            raise Exception("Failed, username already taken.")
 
-    new_user = User(username, None)
-    db.session.add(new_user)
-    db.session.commit()
+        new_user = User(username, None)
+        db.session.add(new_user)
+        db.session.commit()
 
-    return new_user.json()
+        return new_user.json()
+    except Exception as e:
+        app.logger.error(e)
+        abort(500)
 
 @app.route('/create/debt', methods=['POST'])
 def create_debt():
@@ -64,9 +68,9 @@ def create_debt():
 
         amount = int(request.form['amount'])
         if amount == 0:
-          return 'Amount is 0.'
+          raise Exception('Amount is 0.')
         elif amount < 0:
-          return 'Amount cannot be less than 0.'
+          raise Exception('Amount cannot be less than 0.')
 
         description = request.form['description']
         description = description.strip()
