@@ -42,6 +42,10 @@ class Debt(db.Model):
 
     paid = db.Column(db.Boolean)
 
+    created = db.Column(db.DateTime)
+
+    description = db.Column(db.String(300))
+
     def __init__(self, debtor, lender, amount):
         self.debtor = debtor
         self.lender = lender
