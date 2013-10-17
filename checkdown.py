@@ -21,7 +21,7 @@ def get_debts():
 @app.route('/user/<user_id>')
 def get_user(user_id):
     user = User.query.get(user_id)
-    return user.__repr__()
+    return user.json()
 
 @app.route('/user/<user_id>/debts')
 def get_user_debts(user_id):
