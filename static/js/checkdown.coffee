@@ -12,6 +12,7 @@ Debt = Backbone.Model.extend
     description: 'None'
     created: null
     paid: false
+
   toString: ->
     if @get('paid')
       "[Debt: " + @get('debtor') + " owed " + @get('lender') + " " + @get('amount') + "]"
@@ -23,6 +24,15 @@ Users = Backbone.Collection.extend
 
 Debts = Backbone.Collection.extend
   model: Debt
+
+  lenderIs: (user) ->
+    return @filter (debt) ->
+      debt.get('lender').id == user.id
+
+  debtorIs: (user) ->
+    return @filter (debt) ->
+      debt.get('debtor').id == user.id
+
 
 getUsers = ->
   response = $.ajax '/users', async: false
@@ -51,3 +61,7 @@ createDebtFromJSON = (json) ->
     created: json.created
     paid: json.paid
     amount: json.amount
+
+$ ->
+  window.d = getDebts()
+  window.u = getUsers()

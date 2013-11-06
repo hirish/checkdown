@@ -34,7 +34,17 @@
   });
 
   Debts = Backbone.Collection.extend({
-    model: Debt
+    model: Debt,
+    lenderIs: function(user) {
+      return this.filter(function(debt) {
+        return debt.get('lender').id === user.id;
+      });
+    },
+    debtorIs: function(user) {
+      return this.filter(function(debt) {
+        return debt.get('debtor').id === user.id;
+      });
+    }
   });
 
   getUsers = function() {
@@ -95,5 +105,10 @@
       amount: json.amount
     });
   };
+
+  $(function() {
+    window.d = getDebts();
+    return window.u = getUsers();
+  });
 
 }).call(this);
