@@ -62,6 +62,17 @@ createDebtFromJSON = (json) ->
     paid: json.paid
     amount: json.amount
 
+DebtView = Backbone.View.extend
+  initialize: ->
+    @.render()
+
+  render: ->
+    debts = getDebts().models
+    template = _.template $('#debt_list').html(), {debts: debts}
+    @.$el.html template
+
+
 $ ->
   window.d = getDebts()
   window.u = getUsers()
+  window.s = new DebtView el: $('#debtview')
