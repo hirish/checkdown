@@ -8,44 +8,130 @@
   <script src="/js/jquery.js"></script>
   <script src="/js/underscore.js"></script>
   <script src="/js/backbone.js"></script>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css" />
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+
+  <!-- Custom CSS/JS -->
   <script src="/js/checkdown.js"></script>
   <link type="text/css" rel="stylesheet" href="/css/checkdown.css" />
-
-  <script type="text/template" id="debtor">
-    <div>
-      <%= debt.get('debtor').get('username') %>
-      // owes <%= debt.get('lender').get('username') %> $<%= debt.get('amount')  %>.
-      <br />
-      <em><%= debt.get('description') %></em>
-    </div>
-  </script>
-  <script type="text/template" id="debt_list">
-    <% _.each(debts, function(debt){print(_.template($('#debtor').html(), {debt: debt}));}); %>
-  </script>
 
 </head>
 
 <body>
-  <h1>La index.</h1>
 
-  <h2>Create New User</h2>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8"><div class="b">
 
-  <form action="/create/user" method="post">
-    <input name="username" type="text" placeholder="username" /> <input type="submit" />
-  </form>
+    <div class="c"><h2 style="margin-bottom: 15px;">CHECKDOWN</h2></div>
 
-  <h2>Debt View</h2>
-  <div id="debtview"></div>
+    <div id="header">
+      <h1>SVIP Class of 2013</h1>
+      <ul id="users">
+        <span class="label label-primary">barndawg</span>
+        <span class="label label-primary">henoogle</span>
+        <span class="label label-primary">lee.woodridge</span>
+        <span class="label label-default">+</span>
+      </ul>
+    </div>
 
+    <div class="c" id="main">
+      <div class="row">
 
-  <h2>Create New Debt</h2>
+        <div class="col-md-3">
+          <h2>RECENT DEBTS</h2>
+          <div id="debtview"></div>
+        </div>
 
-  <form action="/create/debt" method="post">
-    <input name="lender_id" type="text" placeholder="Lender ID" /> <input name=
-    "debtor_id" type="text" placeholder="Debtor ID" /><br />
-    <input name="amount" type="text" placeholder="Amount" /><br />
-    <input name="description" type="text" placeholder="Description" /> <input type=
-    "submit" />
-  </form>
+        <div class="col-md-6">
+
+          <h2>WHO DO I OWE?</h2>
+          <div class="debt">
+            You owe <a style="font-weight: bold;">barndawg</a> a total of $163.33.
+            <div class="btn-group" style="float: right; margin-top: -5px;">
+              <button class="btn btn-success btn-xs"><i class="fa fa-usd"></i> Pay $163.33</button>
+              <button class="btn btn-primary btn-xs"><i class="fa fa-usd"></i> Pay Other</button>
+            </div>
+            <ul class="fa-ul">
+              <li><i class="fa-li fa fa-arrow-circle-right"></i>Instacart shopping trip -$100.00</li>
+              <li><i class="fa-li fa fa-arrow-circle-left"></i>PG&amp;E Bill August $52.20</li>
+              <li><i class="fa-li fa fa-arrow-circle-right"></i>Instacart shopping trip -$100.00</li>
+              <li><i class="fa-li fa fa-arrow-circle-left"></i>PG&amp;E Bill August $52.20</li>
+            </ul>
+          </div>
+          <div class="debt">
+            You owe <a style="font-weight: bold;">lee.woodridge</a> a total of $13.00
+            <div class="btn-group" style="float: right;">
+              <button class="btn btn-success btn-xs"><i class="fa fa-usd"></i> Pay $13.00</button>
+              <button class="btn btn-primary btn-xs"><i class="fa fa-usd"></i> Pay Other</button>
+            </div>
+            <ul class="fa-ul">
+              <li><i class="fa-li fa fa-arrow-circle-right"></i>Instacart shopping trip -$100.00</li>
+              <li><i class="fa-li fa fa-arrow-circle-left"></i>PG&amp;E Bill August $52.20</li>
+            </ul>
+          </div>
+
+          <h2>WHO OWES ME?</h2>
+
+        </div>
+
+        <div class="col-md-3">
+          <h2>NEW USER</h2>
+
+          <form action="/create/user" method="post" class="form-inline">
+            <div class="form-group">
+              <input name="username" type="text" placeholder="username" class="form-control" style="width: 75%;" />
+              <button type="submit" value="" class="form-control btn-primary" style="width: 23%;">
+                <i class="fa fa-arrow-circle-right"></i>
+              </button>
+            </div>
+          </form>
+
+          <h2>NEW DEBT</h2>
+
+          <form action="/create/debt" method="post">
+            <div class="form-group">
+              <input name="lender_id" type="text" placeholder="Lender ID"  class="form-control"/>
+            </div>
+            <div class="form-group">
+              <input name="debtor_id" type="text" placeholder="Debtor ID"  class="form-control"/>
+            </div>
+            <div class="form-group">
+              <input name="amount" type="text" placeholder="Amount"  class="form-control"/>
+            </div>
+            <div class="form-group">
+              <textarea name="description" placeholder="Description"  class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+              <input type="submit" class="form-control btn-primary" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<script type="text/template" id="debtor">
+  <div class='debt'>
+    <div class='heading'>
+      <a><%= debt.get('debtor').get('username') %></a>
+      <i class="fa fa-arrow-circle-right"></i>
+      <a><%= debt.get('lender').get('username') %></a>
+      <span class="amount">$<%= debt.get('amount')  %></span>
+    </div>
+    <div class='description'>
+      <em><%= debt.get('description') %></em>
+    </div>
+  </div>
+</script>
+<script type="text/template" id="debt_list">
+  <% _.each(debts, function(debt){print(_.template($('#debtor').html(), {debt: debt}));}); %>
+</script>
+
 </body>
 </html>

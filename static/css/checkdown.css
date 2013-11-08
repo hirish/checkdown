@@ -1,0 +1,80 @@
+body {
+  background-image: url(http://pic1.thanksearch.com/9/2013/0615/85/f/679/1600x1200x75x0x0x1.jpg);
+  background-position: 50% 50%;
+  background-repeat: no-repeat no-repeat;
+  font-size: 12px;
+}
+
+h2 {
+  font-size: 12px;
+font-weight: bold;
+}
+
+.b {
+  margin-top: 8%;
+}
+
+.c {
+  padding: 0 15px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid white;
+  border-top: none
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+}
+
+#main {
+  height: 70%;
+  min-height: 410px;
+}
+
+#header {
+  background-color: rgba(30,30,30,0.95);
+  padding: 15px;
+  border: 1px solid #444;
+  border-bottom: none;
+  border-top: none
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  -webkit-font-smoothing: antialiased;
+  box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+}
+
+#users {
+  float: right;
+  margin-top: -22px;
+}
+
+h1 {
+  margin: 0;
+  color: white;
+  font-size: 20px;
+}
+
+#debtview .debt {
+  padding: 7px;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  border-top: 1px solid rgba(255,255,255,0.5);
+}
+
+#debtview .debt:first-child {
+  border-top: none;
+}
+
+#debtview .debt:last-child {
+  border-bottom: none;
+}
+
+#debtview .debt .heading {
+  font-weight: bold;
+}
+
+#debtview .debt .amount{
+  color: #333;
+  float: right;
+}
+
+#debtview .debt .description{
+  display: none;
+}
