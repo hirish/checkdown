@@ -8,7 +8,7 @@ User = Backbone.Model.extend
 Debt = Backbone.Model.extend
   defaults:
     debtor: null
-    lendor: null
+    lender: null
     description: 'None'
     created: null
     paid: false
@@ -26,12 +26,26 @@ Debts = Backbone.Collection.extend
   model: Debt
 
   lenderIs: (user) ->
-    return @filter (debt) ->
+    return new Debts @filter (debt) ->
       debt.get('lender').id == user.id
 
   debtorIs: (user) ->
-    return @filter (debt) ->
+    return new Debts @filter (debt) ->
       debt.get('debtor').id == user.id
+
+  groupByDebtor: ->
+    grouped = @groupBy (debt) ->
+      debt.get('debtor').get('username')
+    for debtor of grouped
+      grouped[debtor] = new Debts grouped[debtor]
+    return grouped
+
+  groupByLender: ->
+    grouped = @groupBy (debt) ->
+      debt.get('lender').get('username')
+    for lender of grouped
+      grouped[lender] = new Debts grouped[lender]
+    return grouped
 
 
 getUsers = ->
@@ -67,12 +81,17 @@ DebtView = Backbone.View.extend
     @.render()
 
   render: ->
-    debts = getDebts().models
-    template = _.template $('#debt_list').html(), {debts: debts}
+    template = ''
+    for debt in @collection.models
+      template += _.template $('#debtor').html(), {debt: debt}
     @.$el.html template
 
 
 $ ->
-  window.d = getDebts()
-  window.u = getUsers()
-  window.s = new DebtView el: $('#debtview')
+  window.debts = debts = getDebts()
+  window.users = users = getUsers()
+  window.user = user = users.models[1]
+  window.s = new DebtView el: $('#debtview'), collection: debts, penis: 'penis'
+
+  window.owe = owe = debts.debtorIs(user)
+  window.owed = owed = debts.lenderIs(user)

@@ -15,7 +15,7 @@
   Debt = Backbone.Model.extend({
     defaults: {
       debtor: null,
-      lendor: null,
+      lender: null,
       description: 'None',
       created: null,
       paid: false
@@ -36,14 +36,34 @@
   Debts = Backbone.Collection.extend({
     model: Debt,
     lenderIs: function(user) {
-      return this.filter(function(debt) {
+      return new Debts(this.filter(function(debt) {
         return debt.get('lender').id === user.id;
-      });
+      }));
     },
     debtorIs: function(user) {
-      return this.filter(function(debt) {
+      return new Debts(this.filter(function(debt) {
         return debt.get('debtor').id === user.id;
+      }));
+    },
+    groupByDebtor: function() {
+      var debtor, grouped;
+      grouped = this.groupBy(function(debt) {
+        return debt.get('debtor').get('username');
       });
+      for (debtor in grouped) {
+        grouped[debtor] = new Debts(grouped[debtor]);
+      }
+      return grouped;
+    },
+    groupByLender: function() {
+      var grouped, lender;
+      grouped = this.groupBy(function(debt) {
+        return debt.get('lender').get('username');
+      });
+      for (lender in grouped) {
+        grouped[lender] = new Debts(grouped[lender]);
+      }
+      return grouped;
     }
   });
 
@@ -111,21 +131,31 @@
       return this.render();
     },
     render: function() {
-      var debts, template;
-      debts = getDebts().models;
-      template = _.template($('#debt_list').html(), {
-        debts: debts
-      });
+      var debt, template, _i, _len, _ref;
+      template = '';
+      _ref = this.collection.models;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        debt = _ref[_i];
+        template += _.template($('#debtor').html(), {
+          debt: debt
+        });
+      }
       return this.$el.html(template);
     }
   });
 
   $(function() {
-    window.d = getDebts();
-    window.u = getUsers();
-    return window.s = new DebtView({
-      el: $('#debtview')
+    var debts, owe, owed, user;
+    window.debts = debts = getDebts();
+    window.users = users = getUsers();
+    window.user = user = users.models[1];
+    window.s = new DebtView({
+      el: $('#debtview'),
+      collection: debts,
+      penis: 'penis'
     });
+    window.owe = owe = debts.debtorIs(user);
+    return window.owed = owed = debts.lenderIs(user);
   });
 
 }).call(this);
