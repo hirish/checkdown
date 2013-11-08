@@ -10,6 +10,18 @@
   <script src="/js/backbone.js"></script>
   <script src="/js/checkdown.js"></script>
 
+  <script type="text/template" id="debtor">
+    <div>
+      <%= debt.get('debtor').get('username') %>
+      // owes <%= debt.get('lender').get('username') %> $<%= debt.get('amount')  %>.
+      <br />
+      <em><%= debt.get('description') %></em>
+    </div>
+  </script>
+  <script type="text/template" id="debt_list">
+    <% _.each(debts, function(debt){print(_.template($('#debtor').html(), {debt: debt}));}); %>
+  </script>
+
 </head>
 
 <body>
@@ -24,6 +36,10 @@
   <form action="/create/user" method="post">
     <input name="username" type="text" placeholder="username" /> <input type="submit" />
   </form>
+
+  <h2>Debt View</h2>
+  <div id="debtview"></div>
+
 
   <h2>Create New Debt</h2>
 
