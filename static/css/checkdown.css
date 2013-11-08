@@ -87,21 +87,14 @@ h1, h2, h3 {
   border-bottom: 1px solid rgba(0,0,0,0.2);
   border-top: 1px solid rgba(255,255,255,0.5);
 }
-
-#debtview .debt:first-child {
-  border-top: none;
-}
-
-#debtview .debt:last-child {
-  border-bottom: none;
-}
+#debtview .debt:first-child { border-top: none; }
+#debtview .debt:last-child { border-bottom: none; }
 
 #debtview .debt .heading {
   font-weight: bold;
 }
 
 #debtview .debt .amount{
-  color: #333;
   float: right;
 }
 
