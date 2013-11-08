@@ -11,7 +11,8 @@ h1, h2, h3 {
 }
 
 .b {
-  margin-top: 8%;
+  margin: 100px auto 0;
+  width: 1100px;
 }
 
 .c {
@@ -23,6 +24,18 @@ h1, h2, h3 {
   -moz-border-radius: 2px;
   border-radius: 2px;
   box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
+}
+
+#recent {
+  /* padding-right: 40px; */
+}
+
+#total {
+  padding: 0 40px;
+}
+
+#forms {
+  /* padding-left: 40px; */
 }
 
 /***************************/
@@ -65,8 +78,8 @@ h1, h2, h3 {
 /***************************/
 
 #main {
-  height: 70%;
   min-height: 410px;
+  margin-bottom: 100px;
 }
 
 #debtview .debt {
@@ -97,13 +110,22 @@ h1, h2, h3 {
 }
 
 .person-debt {
-  margin-top: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  border-top: 1px solid rgba(255,255,255,0.5);
 }
+.person-debt:first-child{ border-top: none; }
+.person-debt:last-child{ border-bottom: none; }
 
 .debt-details {
-  margin-top: 5px;
+  margin: 15px 0px 10px 50px;
 }
 
 .debt-details li {
   margin: 5px 0;
+}
+
+.debt-details li .amount {
+  float: right;
 }
