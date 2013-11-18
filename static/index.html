@@ -13,7 +13,7 @@
   <!-- Bootstrap -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css" />
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 
   <!-- Custom CSS/JS -->
@@ -50,62 +50,7 @@
       <div class="col-md-6" id="total">
 
         <h2>WHO DO I OWE?</h2>
-        <div id="owe">
-          <div class="person-debt">
-            You owe <a style="font-weight: bold;">barndawg</a> $163.33.
-            <ul class="fa-ul debt-details">
-              <li>
-                <i class="fa-li fa fa-arrow-circle-right positive"></i>
-                <span class='date'>08-22-2012:</span>
-                <span class='description'>Instacart shopping trip - bought steak</span>
-                <span class='badge amount positive'>+$52.20</span>
-              </li>
-              <li>
-                <i class="fa-li fa fa-arrow-circle-right"></i>
-                <span class='date'>12-16-2012:</span>
-                <span class='description'>PG&amp;E Bill August $52.20</span>
-                <span class='badge amount negative'>-$100.00</span>
-              </li>
-              <li>
-                <i class="fa-li fa fa-arrow-circle-right"></i>
-                <span class='date'>12-16-2012:</span>
-                <span class='description'>Instacart shopping trip</span>
-                <span class='badge amount positive'>+$52.20</span>
-              </li>
-              <li>
-                <i class="fa-li fa fa-arrow-circle-right"></i>
-                <span class='date'>12-16-2012:</span>
-                <span class='description'>PG&amp;E Bill August $52.20</span>
-                <span class='badge amount negative'>-$100.00</span>
-              </li>
-            </ul>
-            <div class="btn-group" style="width:100%;"><div style="margin: 10 30%;">
-              <button class="btn btn-success btn-xs"><i class="fa fa-usd"></i> Pay $13.00</button>
-              <button class="btn btn-primary btn-xs"><i class="fa fa-usd"></i> Pay Other</button>
-            </div></div>
-          </div>
-          <div class="person-debt">
-            You owe <a style="font-weight: bold;">lee.woodridge</a> a total of $13.00
-            <ul class="fa-ul debt-details">
-              <li>
-                <i class="fa-li fa fa-arrow-circle-right positive"></i>
-                <span class='date'>08-22-2012:</span>
-                <span class='description'>Instacart shopping trip - bought steak</span>
-                <span class='badge amount positive'>+$52.20</span>
-              </li>
-              <li>
-                <i class="fa-li fa fa-arrow-circle-right"></i>
-                <span class='date'>12-16-2012:</span>
-                <span class='description'>PG&amp;E Bill August $52.20</span>
-                <span class='badge amount negative'>-$100.00</span>
-              </li>
-            </ul>
-            <div class="btn-group" style="width:100%;"><div style="margin: 10 30%;">
-              <button class="btn btn-success btn-xs"><i class="fa fa-usd"></i> Pay $13.00</button>
-              <button class="btn btn-primary btn-xs"><i class="fa fa-usd"></i> Pay Other</button>
-            </div></div>
-          </div>
-        </div>
+        <div id="owe"></div>
 
         <h2>WHO OWES ME?</h2>
         <div id="owed">
@@ -187,8 +132,22 @@
     </div>
   </div>
 </script>
-<script type="text/template" id="debt_list">
-  <% _.each(debts, function(debt){print(_.template($('#debtor').html(), {debt: debt}));}); %>
+<script type="text/template" id="myowed">
+  <div class="person-debt">
+    You owe <a style="font-weight: bold;">barndawg</a> $163.33.
+    <ul class="fa-ul debt-details">
+      <li>
+        <i class="fa-li fa fa-arrow-circle-right positive"></i>
+        <span class='date'>08-22-2012:</span>
+        <span class='description'>Instacart shopping trip - bought steak</span>
+        <span class='badge amount positive'>+$52.20</span>
+      </li>
+    </ul>
+    <div class="btn-group" style="width:100%;"><div style="margin: 10 30%;">
+      <button class="btn btn-success btn-xs"><i class="fa fa-usd"></i> Pay $13.00</button>
+      <button class="btn btn-primary btn-xs"><i class="fa fa-usd"></i> Pay Other</button>
+    </div></div>
+  </div>
 </script>
 
 </body>

@@ -76,14 +76,28 @@ createDebtFromJSON = (json) ->
     paid: json.paid
     amount: json.amount
 
+debts = getDebts()
+
 DebtView = Backbone.View.extend
   initialize: ->
-    @.render()
+    @render()
 
   render: ->
     template = ''
     for debt in @collection.models
       template += _.template $('#debtor').html(), {debt: debt}
+    @.$el.html template
+
+MyOwedView = Backbone.View.extend
+  initialize: (args) ->
+    @user = args.user
+    @render()
+
+  render: ->
+    groupedDebts = @collection.debtorIs(@user).groupByLender()
+    template = ''
+    for lenderDebts of groupedDebts
+      template += _.template $('#myowed').html(), {}
     @.$el.html template
 
 
@@ -92,6 +106,7 @@ $ ->
   window.users = users = getUsers()
   window.user = user = users.models[1]
   window.s = new DebtView el: $('#debtview'), collection: debts, penis: 'penis'
+  window.t = new MyOwedView el: $('#owe'), collection: debts, user: user
 
   window.owe = owe = debts.debtorIs(user)
   window.owed = owed = debts.lenderIs(user)
