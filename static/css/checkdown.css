@@ -94,6 +94,10 @@ h1, h2, h3 {
   font-weight: bold;
 }
 
+#debtview .debt .heading i {
+  margin: 0 5px;
+}
+
 #debtview .debt .amount{
   float: right;
 }
