@@ -1,11 +1,32 @@
 User = Backbone.Model.extend
+  initialize: (o) ->
+    @set('username', o.username)
+    @set('email', o.email)
+    @set('id', o.id)
+
   defaults:
     username: 'None'
     email: 'None'
+
   toString: ->
     "[User: " + @get('username') + "]"
 
 Debt = Backbone.Model.extend
+  initialize: (o, options) ->
+    users = options.users
+    lender = users.get o.lender.id
+    debtor = users.get o.debtor.id
+
+    @set('id', o.id)
+    @set('lender', lender)
+    @set('debtor', debtor)
+    @set('amount', o.amount)
+    @set('created', o.created)
+
+    # Optional
+    @set('paid', o.paid) if o.paid?
+    @set('description', o.description) if o.description?
+
   defaults:
     debtor: null
     lender: null
@@ -20,9 +41,11 @@ Debt = Backbone.Model.extend
       "[Debt: " + @get('debtor') + " owes " + @get('lender') + " " + @get('amount') + "]"
 
 Users = Backbone.Collection.extend
-  model: Users
+  url: "users"
+  model: User
 
 Debts = Backbone.Collection.extend
+  url: "debts"
   model: Debt
 
   lenderIs: (user) ->
@@ -51,45 +74,21 @@ Debts = Backbone.Collection.extend
     @reduce ((x, y) -> x + y.get('amount')), 0
 
 
-getUsers = ->
-  response = $.ajax '/users', async: false
-  users = (jQuery.parseJSON response.responseText).users
-  new Users (createUserFromJSON userJSON for userJSON in users)
+##################################################
+### Views: Recent Debts
+##################################################
 
-createUserFromJSON = (json) ->
-  return new User id:json.id, username:json.username, email: json.email
-
-users = getUsers()
-
-getDebts = ->
-  response = $.ajax '/debts', async: false
-  debts = (jQuery.parseJSON response.responseText).debts
-  new Debts (createDebtFromJSON debtJSON for debtJSON in debts)
-
-createDebtFromJSON = (json) ->
-  debtor = users.get json.debtor.id
-  lender = users.get json.lender.id
-
-  return new Debt
-    id: json.id
-    debtor: debtor
-    lender: lender
-    description: json.description
-    created: json.created
-    paid: json.paid
-    amount: json.amount
-
-AllList = React.createClass
+RecentList = React.createClass
   getInitialState: ->
     @props.debts.on 'change add remove', (e) =>
       @setState {debts: @props.debts}
     {debts: @props.debts}
 
   render: ->
-    renderedDebts = @state.debts.map (debt) -> AllDebt {debt: debt}
+    renderedDebts = @state.debts.map (debt) -> RecentDebt {debt: debt}
     React.DOM.div {id: "debtview"}, renderedDebts
 
-AllDebt = React.createClass
+RecentDebt = React.createClass
   render: ->
     debtor = @props.debt.get('debtor').get('username')
     lender = @props.debt.get('lender').get('username')
@@ -97,63 +96,88 @@ AllDebt = React.createClass
     amount = @props.debt.get('amount')
     description = @props.debt.get('description')
 
-    React.DOM.div({className: "debt"},
-      React.DOM.div({className: "heading"},
-        React.DOM.a({}, debtor),
-        React.DOM.i({className: "fa fa-arrow-circle-right"}),
-        React.DOM.a({}, lender),
-        React.DOM.span({className: "amount"}, "$" + amount)
+    {div, a, i, span} = React.DOM
+    (div {className: "debt"},
+      (div {className: "heading"},
+        (a {}, debtor),
+        (i {className: "fa fa-arrow-circle-right"}),
+        (a {}, lender),
+        (span {className: "amount"}, "$" + amount)
       )
-      React.DOM.div({className: "description"}, description)
+      (div {className: "description"}, description)
     )
 
-debts = getDebts()
+##################################################
+### Views: My coalesced debts and loans
+##################################################
 
-MyOwedList = React.createClass
+MyList = React.createClass
   getInitialState: ->
     @props.debts.on 'change add remove', (e) =>
-      @setState {debts: @props.debts}
-    {user: @props.user, debts: @props.debts}
+      @setState {debts: @props.debts, user: @props.debts.get(@props.userId)}
+    {user: @props.debts.get(@props.userId), debts: @props.debts, userIsDebtor: @props.userIsDebtor}
 
   render: ->
-    groupedDebts = @state.debts.debtorIs(@state.user).groupByLender()
+    if @state.userIsDebtor
+      groupedDebts = @state.debts.debtorIs(@state.user).groupByLender()
+    else
+      groupedDebts = @state.debts.lenderIs(@state.user).groupByDebtor()
+
     groupedDebtsArray = ([key, groupedDebts[key]] for key of groupedDebts)
 
-    renderedUsers = groupedDebtsArray.map (group) -> MyOwedUser {lender: group[0], debts: group[1]}
+    renderedUsers = groupedDebtsArray.map (group) =>
+      MyUser
+        otherUser: group[0]
+        debts: group[1]
+        userIsDebtor: @state.userIsDebtor
+
     React.DOM.div {}, renderedUsers
 
-MyOwedUser = React.createClass
+MyUser = React.createClass
   render: ->
-    username = @props.lender
+    username = @props.otherUser
     total = @props.debts.totalAmount()
 
-    renderedDebts = @props.debts.map (debt) -> MyOwedDebt({debt: debt})
+    if @props.userIsDebtor
+      text = "You owe "
+    else
+      text = "You are owed by "
 
-    React.DOM.div({className: "person-debt"},
-      "You are owed by ",
-      React.DOM.a({style: {'font-weight': 'bold'}}, username),
-      " a total of $" + total,
-      React.DOM.ul({className: "fa-ul debt-details"}, renderedDebts),
-      MyButtons({total: total})
+    renderedDebts = @props.debts.map (debt) =>
+      MyDebt
+        debt: debt
+        userIsDebtor: @props.userIsDebtor
+
+    {div, a, ul} = React.DOM
+    (div {className: "person-debt"},
+      text, (a {style: {'font-weight': 'bold'}}, username), " a total of $" + total,
+      (ul {className: "fa-ul debt-details"}, renderedDebts),
+      (MyButtons {total: total, userIsDebtor: @props.userIsDebtor})
     )
 
-MyOwedDebt = React.createClass
+MyDebt = React.createClass
   render: ->
     date = "08-22-2012"
     description = @props.debt.get('description')
     amount = @props.debt.get('amount')
 
-    React.DOM.li({},
-      React.DOM.i({className: "fa-li fa fa-arrow-circle-right"}),
-      React.DOM.span({className: 'date'}, date + ': '),
-      React.DOM.span({className: 'description'}, description)
-      React.DOM.span({className: 'badge amount positive'}, '$' + amount)
+    {li, i, span} = React.DOM
+    (li {},
+      (i {className: "fa-li fa fa-arrow-circle-right"}),
+      (span {className: 'date'}, date + ': '),
+      (span {className: 'description'}, description)
+      (span {className: 'badge amount positive'}, '$' + amount)
     )
 
 MyButtons = React.createClass
   render: ->
     total = @props.total
-    buttons = MyPaymentButtons({total})
+
+    if @props.userIsDebtor
+      buttons = MyPaymentButtons({total: total})
+    else
+      buttons = MyChargeButtons({total: total})
+
     React.DOM.div {className: "btn-group", style: {width: "100%"}}, buttons
 
 MyPaymentButtons = React.createClass
@@ -171,29 +195,26 @@ MyPaymentButtons = React.createClass
       )
     )
 
-MyOwedView = Backbone.View.extend
-  initialize: (args) ->
-    @user = args.user
-    @render()
-
+MyChargeButtons = React.createClass
   render: ->
-    groupedDebts = @collection.debtorIs(@user).groupByLender()
-    template = ''
-    for lenderDebts of groupedDebts
-      template += _.template $('#myowed').html(), {}
-    @.$el.html template
+    total = @props.total
 
+    React.DOM.div({style: {margin: "10px 30%"}},
+      React.DOM.button({className: "btn btn-success btn-xs"}
+        React.DOM.i({className: "fa fa-usd"}),
+        "Charge $ " + total
+      )
+    )
 
 $ ->
-  window.debts = debts
-  window.users = users
-  window.user = user = users.models[1]
+  window.users = users = new Users()
+  users.fetch()
 
-  # window.t = new MyOwedView el: $('#owe'), collection: debts, user: user
+  window.debts = debts = new Debts()
+  debts.fetch users: users
 
-  React.renderComponent MyOwedList({user: user, debts: debts}), $('#owe')[0]
-  React.renderComponent AllList({debts: debts}), $('#debtviewholder')[0]
+  userId = 2
 
-  window.owe = owe = debts.debtorIs(user)
-  window.owed = owed = debts.lenderIs(user)
-
+  React.renderComponent RecentList({debts: debts}), $('#debtviewholder')[0]
+  React.renderComponent MyList({userId: userId, debts: debts, userIsDebtor: true}), $('#owe')[0]
+  React.renderComponent MyList({userId: userId, debts: debts, userIsDebtor: false}), $('#owed')[0]

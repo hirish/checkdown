@@ -11,12 +11,14 @@ def index():
 @app.route('/users')
 def get_users():
     users = User.query.all()
-    return json.dumps({'users': [ user.dictify() for user in users ] })
+    return json.dumps([ user.dictify() for user in users ] )
+    # return json.dumps({'users': [ user.dictify() for user in users ] })
 
 @app.route('/debts')
 def get_debts():
     debts = Debt.query.all()
-    return json.dumps({'debts': [ debt.dictify() for debt in debts ] })
+    return json.dumps([ debt.dictify() for debt in debts ])
+    # return json.dumps({'debts': [ debt.dictify() for debt in debts ] })
 
 @app.route('/user/<user_id>')
 def get_user(user_id):
