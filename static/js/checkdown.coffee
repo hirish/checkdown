@@ -114,45 +114,83 @@ RecentDebt = React.createClass
 MyList = React.createClass
   getInitialState: ->
     @props.debts.on 'change add remove', (e) =>
-      @setState {debts: @props.debts, user: @props.debts.get(@props.userId)}
-    {user: @props.debts.get(@props.userId), debts: @props.debts, userIsDebtor: @props.userIsDebtor}
+      @setState 
+        debts: @props.debts
+        users: @props.users
+        user: @props.users.get(@props.userId)
+    {
+      user: @props.users.get(@props.userId)
+      debts: @props.debts
+      users: @props.users
+    }
 
   render: ->
-    if @state.userIsDebtor
-      groupedDebts = @state.debts.debtorIs(@state.user).groupByLender()
-    else
-      groupedDebts = @state.debts.lenderIs(@state.user).groupByDebtor()
+    # if @state.userIsDebtor
+    #   groupedDebts = @state.debts.debtorIs(@state.user).groupByLender()
+    # else
+    #   groupedDebts = @state.debts.lenderIs(@state.user).groupByDebtor()
 
-    groupedDebtsArray = ([key, groupedDebts[key]] for key of groupedDebts)
+    # groupedDebtsArray = ([key, groupedDebts[key]] for key of groupedDebts)
 
-    renderedUsers = groupedDebtsArray.map (group) =>
-      MyUser
-        otherUser: group[0]
-        debts: group[1]
-        userIsDebtor: @state.userIsDebtor
+    # renderedUsers = groupedDebtsArray.map (group) =>
+    renderedUsers = @state.users.map (otherUser) =>
+      debts = @props.debts.debtorIs(@state.user).lenderIs(otherUser)
+      loans = @props.debts.lenderIs(@state.user).debtorIs(otherUser)
+
+      if debts.length > 0 or loans.length > 0
+        MyUser
+          user: @state.user
+          username: otherUser.get('username')
+          debts: debts
+          loans: loans
+      else
+        return
 
     React.DOM.div {}, renderedUsers
 
 MyUser = React.createClass
   render: ->
-    username = @props.otherUser
-    total = @props.debts.totalAmount()
-
-    if @props.userIsDebtor
-      text = "You owe "
-    else
-      text = "You are owed by "
-
-    renderedDebts = @props.debts.map (debt) =>
-      MyDebt
-        debt: debt
-        userIsDebtor: @props.userIsDebtor
-
     {div, a, ul} = React.DOM
+    total = @props.debts.totalAmount() - @props.loans.totalAmount()
+
+    if total > 0
+      startText = "You owe "
+      renderedAmount = " a total of $" + total + ". "
+    else if total < 0
+      startText = "You are owed by "
+      renderedAmount = " a total of $" + Math.abs(total) + ". "
+
+    topText = [
+      startText
+      (a {style: {'font-weight': 'bold'}}, @props.username)
+      renderedAmount
+    ]
+
+    if @props.debts.length > 0
+      renderedDebts = @props.debts.map (debt) -> MyDebt debt: debt, isDebt: true
+
+      debts = [
+        "You owe "
+        (a {style: {'font-weight': 'bold'}}, @props.username)
+        " for:"
+        (ul {className: "fa-ul debt-details"}, renderedDebts)
+      ]
+    else debts = []
+
+    if @props.loans.length > 0
+      renderedLoans = @props.loans.map (debt) -> MyDebt debt: debt, isDebt: false
+      loans = [
+        (a {style: {'font-weight': 'bold'}}, @props.username)
+        " owes you for:"
+        (ul {className: "fa-ul debt-details"}, renderedLoans)
+      ]
+    else loans = []
+
     (div {className: "person-debt"},
-      text, (a {style: {'font-weight': 'bold'}}, username), " a total of $" + total,
-      (ul {className: "fa-ul debt-details"}, renderedDebts),
-      (MyButtons {total: total, userIsDebtor: @props.userIsDebtor})
+      topText,
+      debts
+      loans
+      (MyButtons {total: total})
     )
 
 MyDebt = React.createClass
@@ -161,48 +199,50 @@ MyDebt = React.createClass
     description = @props.debt.get('description')
     amount = @props.debt.get('amount')
 
+    if @props.isDebt
+      color = 'alert'
+    else
+      color = 'success'
+
     {li, i, span} = React.DOM
     (li {},
       (i {className: "fa-li fa fa-arrow-circle-right"}),
       (span {className: 'date'}, date + ': '),
       (span {className: 'description'}, description)
-      (span {className: 'badge amount positive'}, '$' + amount)
+      (span {className: 'label right radius ' + color}, '$' + amount)
     )
 
 MyButtons = React.createClass
   render: ->
     total = @props.total
 
-    if @props.userIsDebtor
+    if total > 0
       buttons = MyPaymentButtons({total: total})
-    else
+    else if total < 0
       buttons = MyChargeButtons({total: total})
 
-    React.DOM.div {className: "btn-group", style: {width: "100%"}}, buttons
+    React.DOM.div {className: "text-center", style: {width: "100%"}}, buttons
 
 MyPaymentButtons = React.createClass
   render: ->
     total = @props.total
 
-    React.DOM.div({style: {margin: "10px 30%"}},
-      React.DOM.button({className: "btn btn-success btn-xs"}
-        React.DOM.i({className: "fa fa-usd"}),
-        "Pay $ " + total
+    React.DOM.div({},
+      React.DOM.button({className: "button tiny radius"}
+        "Pay $" + total
       )," ",
-      React.DOM.button({className: "btn btn-primary btn-xs"}
-        React.DOM.i({className: "fa fa-usd"}),
+      React.DOM.button({className: "button tiny radius success"}
         "Pay Other"
       )
     )
 
 MyChargeButtons = React.createClass
   render: ->
-    total = @props.total
+    total = Math.abs @props.total
 
-    React.DOM.div({style: {margin: "10px 30%"}},
-      React.DOM.button({className: "btn btn-success btn-xs"}
-        React.DOM.i({className: "fa fa-usd"}),
-        "Charge $ " + total
+    React.DOM.div({},
+      React.DOM.button({className: "button tiny radius"}
+        "Charge $" + total
       )
     )
 
@@ -216,5 +256,4 @@ $ ->
   userId = 2
 
   React.renderComponent RecentList({debts: debts}), $('#debtviewholder')[0]
-  React.renderComponent MyList({userId: userId, debts: debts, userIsDebtor: true}), $('#owe')[0]
-  React.renderComponent MyList({userId: userId, debts: debts, userIsDebtor: false}), $('#owed')[0]
+  React.renderComponent MyList({userId: userId, debts: debts, users: users}), $('#owe')[0]

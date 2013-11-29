@@ -3,8 +3,9 @@
   <meta name="generator" content=
   "HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org" />
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 
-  <title>CheckDown</title>
+  <title>GoDutch</title>
   <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script> -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="/js/underscore.js"></script>
@@ -13,10 +14,13 @@
   <link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Rambla:400,700,400italic|Sanchez:400italic,400"></link>
 
   <!-- Bootstrap -->
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css" />
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" />
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+  <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" /> -->
+  <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap&#45;theme.min.css" /> -->
+  <!-- <link href="//netdna.bootstrapcdn.com/font&#45;awesome/4.0.3/css/font&#45;awesome.css" rel="stylesheet" /> -->
+  <!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script> -->
+
+  <!-- Foundation -->
+  <link rel="stylesheet" href="css/foundation.css" />
 
   <!-- Custom CSS/JS -->
   <script src="/js/checkdown.js"></script>
@@ -24,80 +28,97 @@
 
 </head>
 
-<body>
+<body class="row">
 
-<div class="b">
+<div class="large-12 show-for-large-up" style="height: 100px;"></div>
 
-  <div class="c"><h2 style="margin-bottom: 15px;">CHECKDOWN</h2></div>
+<div class="large-12">
 
-  <div id="header">
-    <h1>
+  <div class="c"><h1>GODUT.CH</h1></div>
+
+  <div id="header" class="clearfix">
+    <h1 class="left">
       <strong>SVIP Class of 2013</strong>
-      <i class="fa fa-chevron-circle-down" style="margin-left: 5px; font-size: 12px;"></i>
-      <span class="label label-default">+</span>
-      <span class="label label-primary">barndawg</span>
-      <span class="label label-primary">henoogle</span>
-      <span class="label label-primary">lee.woodridge</span>
     </h1>
+    <dl class="sub-nav right">
+      <dd><a href="#">Add User</a></dd>
+      <dd><a href="#">Reorganise Debts</a></dd>
+    </dl>
   </div>
 
   <div class="c" id="main">
     <div class="row">
 
-      <div class="col-md-3" id="recent">
-        <h2>RECENT DEBTS</h2>
-        <div id="debtviewholder"></div>
-      </div>
-
-      <div class="col-md-6" id="total">
-
-        <h2>WHO DO I OWE?</h2>
-        <div id="owe"></div>
-
-        <h2>WHO OWES ME?</h2>
-        <div id="owed"></div>
-
-      </div>
-
-      <div class="col-md-3" id="forms">
-        <h2>NEW USER</h2>
-
-        <form action="/create/user" method="post" class="form-inline">
-          <div class="form-group">
-            <input name="username" type="text" placeholder="username" class="form-control" style="width: 75%;" />
-            <button type="submit" value="" class="form-control btn-primary" style="width: 23%;">
-              <i class="fa fa-arrow-circle-right"></i>
-            </button>
-          </div>
-        </form>
+      <div class="large-4 columns" id="recent">
 
         <h2>NEW DEBT</h2>
 
         <form action="/create/debt" method="post">
-          <div class="form-group">
-            <input name="lender_id" type="text" placeholder="Lender ID"  class="form-control"/>
+          <div class="row collapse">
+            <div class="small-6 columns">
+              <select style="border-right: none;">
+                <option>Charge</option>
+                <option>I Owe</option>
+              </select>
+            </div>
+            <div class="small-1 columns">
+              <span class="prefix">$</span>
+            </div>
+            <div class="small-5 columns">
+              <input name="amount" type="text" placeholder="6.00" />
+            </div>
           </div>
-          <div class="form-group">
-            <input name="debtor_id" type="text" placeholder="Debtor ID"  class="form-control"/>
+          <div class="row collapse">
+            <div class="small-2 columns">
+              <span class="prefix">To</span>
+            </div>
+            <div class="small-10 columns">
+              <select>
+                <option>barndawg</option>
+                <option>lee.woodbridge</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <input name="amount" type="text" placeholder="Amount"  class="form-control"/>
-          </div>
-          <div class="form-group">
-            <textarea name="description" placeholder="Description"  class="form-control"></textarea>
-          </div>
-          <div class="form-group">
-            <input type="submit" class="form-control btn-primary" />
+          <div class="row collapse">
+            <div class="small-2 columns">
+              <span class="prefix">For</span>
+            </div>
+            <div class="small-8 columns">
+              <input name="description" type="text" placeholder="Dinner at Wendy's..."  class="form-control"/>
+            </div>
+            <div class="small-2 columns">
+              <input type="submit" value="Go" class="button postfix radius" />
+            </div>
           </div>
         </form>
+
+        <div id="recent" class="show-for-large-up">
+          <h2>RECENT DEBTS</h2>
+          <div id="debtviewholder"></div>
+        </div>
       </div>
-      <!-- END FORMS -->
+
+      <div class="large-1 columns show-for-large-up"></div>
+
+      <div class="large-7 columns" id="total">
+
+        <h2>WHO DO I OWE?</h2>
+        <div id="owe"></div>
+
+      </div>
 
     </div>
   </div>
   <!-- END MAIN -->
 
 </div>
+
+<div class="large-12 show-for-large-up" style="height: 100px;"></div>
+
+<script src="js/foundation.min.js"></script>
+<script>
+  $(document).foundation();
+</script>
 
 </body>
 </html>

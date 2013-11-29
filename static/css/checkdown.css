@@ -1,8 +1,7 @@
 body {
   background-image: url(http://pic1.thanksearch.com/9/2013/0615/85/f/679/1600x1200x75x0x0x1.jpg);
-  background-position: 50% 50%;
-  background-repeat: no-repeat no-repeat;
   font-family: Rambla;
+  font-size: 14px;
 }
 
 h1, h2, h3 {
@@ -10,14 +9,17 @@ h1, h2, h3 {
   font-family: Sanchez;
 }
 
-.b {
-  margin: 100px auto 0;
-  width: 1100px;
+h1 {
+  margin: 0px;
+}
+
+h2 {
+  margin-bottom: 20px;
 }
 
 .c {
-  padding: 0 30px;
-  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px 30px;
+  background-color: rgba(255, 255, 255, 1);
   border: 1px solid white;
   border-top: none
   -webkit-border-radius: 2px;
@@ -26,16 +28,10 @@ h1, h2, h3 {
   box-shadow: 0px 0px 8px rgba(0,0,0,0.3);
 }
 
-#recent {
-  /* padding-right: 40px; */
-}
-
-#total {
-  padding: 0 40px;
-}
-
-#forms {
-  /* padding-left: 40px; */
+select, input {
+  height: 37px;
+  font-family: Rambla !important;
+  color: rgba(0,0,0,0.75);
 }
 
 /***************************/
@@ -57,8 +53,17 @@ h1, h2, h3 {
   #header h1 {
     margin: 0;
     color: white;
-    width: 100%;
     font-size: 16px;
+  }
+
+  #header .sub-nav {
+    margin-bottom: 0px;
+    margin-top: -1px;
+  }
+
+  dl, dt, dd {
+    font-size: 14px !important;
+    margin-bottom: 0px;
   }
 
   #header h1 strong{
@@ -66,10 +71,8 @@ h1, h2, h3 {
     font-weight: normal;
   }
 
-  #header h1 span{
+  #header h1 dl{
     float: right;
-    margin-left: 5px;
-    margin-top: 2px;
     font-family: Rambla;
   }
 
@@ -79,7 +82,6 @@ h1, h2, h3 {
 
 #main {
   min-height: 410px;
-  margin-bottom: 100px;
 }
 
 #debtview .debt {
@@ -112,7 +114,7 @@ h1, h2, h3 {
   border-bottom: 1px solid rgba(0,0,0,0.2);
   border-top: 1px solid rgba(255,255,255,0.5);
 }
-.person-debt:first-child{ border-top: none; }
+.person-debt:first-child{ border-top: none; padding-top: 0px; }
 .person-debt:last-child{ border-bottom: none; }
 
 .debt-details {
@@ -121,6 +123,7 @@ h1, h2, h3 {
 
 .debt-details li {
   margin: 5px 0;
+  font-size: 14px;
 }
 
 .debt-details li .amount {

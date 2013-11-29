@@ -156,37 +156,33 @@ MyList = React.createClass({
     this.props.debts.on('change add remove', function(e) {
       return _this.setState({
         debts: _this.props.debts,
-        user: _this.props.debts.get(_this.props.userId)
+        users: _this.props.users,
+        user: _this.props.users.get(_this.props.userId)
       });
     });
     return {
-      user: this.props.debts.get(this.props.userId),
+      user: this.props.users.get(this.props.userId),
       debts: this.props.debts,
-      userIsDebtor: this.props.userIsDebtor
+      users: this.props.users
     };
   },
   render: function() {
-    var groupedDebts, groupedDebtsArray, key, renderedUsers,
+    var renderedUsers,
       _this = this;
-    if (this.state.userIsDebtor) {
-      groupedDebts = this.state.debts.debtorIs(this.state.user).groupByLender();
-    } else {
-      groupedDebts = this.state.debts.lenderIs(this.state.user).groupByDebtor();
-    }
-    groupedDebtsArray = (function() {
-      var _results;
-      _results = [];
-      for (key in groupedDebts) {
-        _results.push([key, groupedDebts[key]]);
+    renderedUsers = this.state.users.map(function(otherUser) {
+      var debts, loans;
+      debts = _this.props.debts.debtorIs(_this.state.user).lenderIs(otherUser);
+      loans = _this.props.debts.lenderIs(_this.state.user).debtorIs(otherUser);
+      if (debts.length > 0 || loans.length > 0) {
+        return MyUser({
+          user: _this.state.user,
+          username: otherUser.get('username'),
+          debts: debts,
+          loans: loans
+        });
+      } else {
+
       }
-      return _results;
-    })();
-    renderedUsers = groupedDebtsArray.map(function(group) {
-      return MyUser({
-        otherUser: group[0],
-        debts: group[1],
-        userIsDebtor: _this.state.userIsDebtor
-      });
     });
     return React.DOM.div({}, renderedUsers);
   }
@@ -194,43 +190,80 @@ MyList = React.createClass({
 
 MyUser = React.createClass({
   render: function() {
-    var a, div, renderedDebts, text, total, ul, username, _ref,
-      _this = this;
-    username = this.props.otherUser;
-    total = this.props.debts.totalAmount();
-    if (this.props.userIsDebtor) {
-      text = "You owe ";
-    } else {
-      text = "You are owed by ";
-    }
-    renderedDebts = this.props.debts.map(function(debt) {
-      return MyDebt({
-        debt: debt,
-        userIsDebtor: _this.props.userIsDebtor
-      });
-    });
+    var a, debts, div, loans, renderedAmount, renderedDebts, renderedLoans, startText, topText, total, ul, _ref;
     _ref = React.DOM, div = _ref.div, a = _ref.a, ul = _ref.ul;
+    total = this.props.debts.totalAmount() - this.props.loans.totalAmount();
+    if (total > 0) {
+      startText = "You owe ";
+      renderedAmount = " a total of $" + total + ". ";
+    } else if (total < 0) {
+      startText = "You are owed by ";
+      renderedAmount = " a total of $" + Math.abs(total) + ". ";
+    }
+    topText = [
+      startText, a({
+        style: {
+          'font-weight': 'bold'
+        }
+      }, this.props.username), renderedAmount
+    ];
+    if (this.props.debts.length > 0) {
+      renderedDebts = this.props.debts.map(function(debt) {
+        return MyDebt({
+          debt: debt,
+          isDebt: true
+        });
+      });
+      debts = [
+        "You owe ", a({
+          style: {
+            'font-weight': 'bold'
+          }
+        }, this.props.username), " for:", ul({
+          className: "fa-ul debt-details"
+        }, renderedDebts)
+      ];
+    } else {
+      debts = [];
+    }
+    if (this.props.loans.length > 0) {
+      renderedLoans = this.props.loans.map(function(debt) {
+        return MyDebt({
+          debt: debt,
+          isDebt: false
+        });
+      });
+      loans = [
+        a({
+          style: {
+            'font-weight': 'bold'
+          }
+        }, this.props.username), " owes you for:", ul({
+          className: "fa-ul debt-details"
+        }, renderedLoans)
+      ];
+    } else {
+      loans = [];
+    }
     return div({
       className: "person-debt"
-    }, text, a({
-      style: {
-        'font-weight': 'bold'
-      }
-    }, username), " a total of $" + total, ul({
-      className: "fa-ul debt-details"
-    }, renderedDebts), MyButtons({
-      total: total,
-      userIsDebtor: this.props.userIsDebtor
+    }, topText, debts, loans, MyButtons({
+      total: total
     }));
   }
 });
 
 MyDebt = React.createClass({
   render: function() {
-    var amount, date, description, i, li, span, _ref;
+    var amount, color, date, description, i, li, span, _ref;
     date = "08-22-2012";
     description = this.props.debt.get('description');
     amount = this.props.debt.get('amount');
+    if (this.props.isDebt) {
+      color = 'alert';
+    } else {
+      color = 'success';
+    }
     _ref = React.DOM, li = _ref.li, i = _ref.i, span = _ref.span;
     return li({}, i({
       className: "fa-li fa fa-arrow-circle-right"
@@ -239,7 +272,7 @@ MyDebt = React.createClass({
     }, date + ': '), span({
       className: 'description'
     }, description), span({
-      className: 'badge amount positive'
+      className: 'label right radius ' + color
     }, '$' + amount));
   }
 });
@@ -248,17 +281,17 @@ MyButtons = React.createClass({
   render: function() {
     var buttons, total;
     total = this.props.total;
-    if (this.props.userIsDebtor) {
+    if (total > 0) {
       buttons = MyPaymentButtons({
         total: total
       });
-    } else {
+    } else if (total < 0) {
       buttons = MyChargeButtons({
         total: total
       });
     }
     return React.DOM.div({
-      className: "btn-group",
+      className: "text-center",
       style: {
         width: "100%"
       }
@@ -270,35 +303,21 @@ MyPaymentButtons = React.createClass({
   render: function() {
     var total;
     total = this.props.total;
-    return React.DOM.div({
-      style: {
-        margin: "10px 30%"
-      }
-    }, React.DOM.button({
-      className: "btn btn-success btn-xs"
-    }, React.DOM.i({
-      className: "fa fa-usd"
-    }), "Pay $ " + total), " ", React.DOM.button({
-      className: "btn btn-primary btn-xs"
-    }, React.DOM.i({
-      className: "fa fa-usd"
-    }), "Pay Other"));
+    return React.DOM.div({}, React.DOM.button({
+      className: "button tiny radius"
+    }, "Pay $" + total), " ", React.DOM.button({
+      className: "button tiny radius success"
+    }, "Pay Other"));
   }
 });
 
 MyChargeButtons = React.createClass({
   render: function() {
     var total;
-    total = this.props.total;
-    return React.DOM.div({
-      style: {
-        margin: "10px 30%"
-      }
-    }, React.DOM.button({
-      className: "btn btn-success btn-xs"
-    }, React.DOM.i({
-      className: "fa fa-usd"
-    }), "Charge $ " + total));
+    total = Math.abs(this.props.total);
+    return React.DOM.div({}, React.DOM.button({
+      className: "button tiny radius"
+    }, "Charge $" + total));
   }
 });
 
@@ -314,14 +333,9 @@ $(function() {
   React.renderComponent(RecentList({
     debts: debts
   }), $('#debtviewholder')[0]);
-  React.renderComponent(MyList({
-    userId: userId,
-    debts: debts,
-    userIsDebtor: true
-  }), $('#owe')[0]);
   return React.renderComponent(MyList({
     userId: userId,
     debts: debts,
-    userIsDebtor: false
-  }), $('#owed')[0]);
+    users: users
+  }), $('#owe')[0]);
 });
