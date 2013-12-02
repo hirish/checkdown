@@ -173,7 +173,7 @@ MyUser = React.createClass
         "You owe "
         (a {style: {'font-weight': 'bold'}}, @props.username)
         " for:"
-        (ul {className: "fa-ul debt-details"}, renderedDebts)
+        (ul {className: "fa-ul debt-details large-6 columns"}, renderedDebts)
       ]
     else debts = []
 
