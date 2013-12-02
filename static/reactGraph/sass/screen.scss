@@ -1,0 +1,51 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+
+$colour1: rgba(151,187,205, 1);
+$colour1_f: rgba(151,187,205, 0.5);
+$colour1_fh: rgba(151,187,205, 0.7);
+
+$colour2: rgba(200,100,100, 1);
+$colour2_f: rgba(200,100,100, 0.5);
+$colour2_fh: rgba(200,100,100, 0.7);
+
+svg {
+  margin: 10px;
+}
+
+svg.reactGraph {
+
+  path {
+    stroke-width: 2px;
+    fill: none;
+  }
+
+  circle {
+    stroke: white;
+    stroke-width: 1px;
+  }
+
+  .axis {
+    stroke: #999;
+    stroke-width: 1px;
+  }
+
+  path.colour1 { stroke: $colour1; }
+  path.fill_colour1 { fill: $colour1_f; }
+  path.fill_colour1:hover { fill: $colour1_fh; }
+
+  path.colour2 { stroke: $colour2; }
+  path.fill_colour2 { fill: $colour2_f; }
+  path.fill_colour2:hover { fill: $colour2_fh; }
+
+  g.fill_colour1 circle { fill: $colour1; }
+  g.fill_colour2 circle { fill: $colour2; }
+
+  .positive { clip-path: url('#positive'); }
+  .negative { clip-path: url('#negative'); }
+
+}

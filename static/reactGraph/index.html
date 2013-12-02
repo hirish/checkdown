@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.5.1/react.min.js"></script>
+    <script src="reactGraph.js"></script>
+
+    <link href="stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Hello World</h1>
+    <div id="other">test</div>
+
+    <svg class="reactGraph" width="700" height="210">
+      <clipPath id="positive">
+        <rect x="0" y="0" width="625" height="100" />
+      </clipPath>
+      <clipPath id="negative">
+        <rect x="0" y="100" width="625" height="100" />
+      </clipPath>
+      <g id="graph"></g>
+    </svg>
+
+    <svg class="reactGraph" xmlns="http://www.w3.org/2000/svg" version="1.1">
+
+      <path d="M 5 100 C 66 100, 33, 50, 100 50 C 110 50, 110 75, 120 75 C 135 75, 135 140, 150 140 L 190 150 L 240 110 L 300 90" class="colour1" />
+      <path d="M 5 100 C 50 100, 50, 50, 100 50 C 110 50, 110 75, 120 75 C 135 75, 135 140, 150 140 L 190 150 L 240 110 L 300 90 V 100" class="fill_colour1" clip-path="url(#test)" />
+      <!-- <path d="M 5 100 L 100 50 L 115 75 L 128 100 V 100 H 270 L 300 90 V 100" class="fill_colour1" /> -->
+      <!-- <path d="M 5 100 H 128 L 150 140 L 190 150 L 240 110 L 270 100" class="fill_colour2" /> -->
+
+      <line x1="3" y1="0" x2="3" y2="200" class="axis" />
+      <line x1="0" y1="100" x2="300" y2="100" class="axis" />
+
+      <circle cx="100" cy="50" r="3" class="colour1" />
+      <circle cx="5" cy="100" r="3" class="colour1" />
+      <circle cx="115" cy="75" r="3" class="colour1" />
+      <circle cx="150" cy="140" r="3" class="colour1" />
+      <circle cx="190" cy="150" r="3" class="colour1" />
+      <circle cx="240" cy="110" r="3" class="colour1" />
+      <circle cx="300" cy="90" r="3" class="colour1" />
+
+    </svg>
+  </body>
+</html>
