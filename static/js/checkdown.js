@@ -242,12 +242,14 @@ MyDebtTable = React.createClass({
         cumulative: cumulative
       });
     });
-    return table({}, thead({}, tr({}, th({
+    return table({
+      className: "medium-12 columns"
+    }, thead({}, tr({}, th({
       width: 100
     }, "Date"), th({}, "Description"), th({
       width: 80
     }, "Amount"), th({
-      className: "show-for-large-up",
+      className: "show-for-medium-up",
       width: 80
     }, "Culmulative"))), tbody({}, debtLines));
   }
@@ -265,7 +267,7 @@ MyDebt = React.createClass({
     return tr({
       className: type
     }, td({}, date), td({}, description), td({}, '$' + amount), td({
-      className: "show-for-large-up"
+      className: "show-for-medium-up"
     }, '$' + cumulative));
   }
 });

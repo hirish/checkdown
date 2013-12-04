@@ -67,50 +67,50 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   display: block;
 }
 
-/* line 16, ../sass/screen.scss */
+/* line 13, ../sass/screen.scss */
 svg.reactGraph path {
   stroke-width: 2px;
   fill: none;
 }
-/* line 21, ../sass/screen.scss */
+/* line 18, ../sass/screen.scss */
 svg.reactGraph circle {
   stroke: white;
   stroke-width: 1px;
 }
-/* line 26, ../sass/screen.scss */
+/* line 23, ../sass/screen.scss */
 svg.reactGraph .axis {
   stroke: #999;
   stroke-width: 1px;
 }
-/* line 31, ../sass/screen.scss */
+/* line 28, ../sass/screen.scss */
 svg.reactGraph path.fill {
   opacity: 0.5;
 }
-/* line 33, ../sass/screen.scss */
+/* line 30, ../sass/screen.scss */
 svg.reactGraph path.fill:hover {
   opacity: 0.7;
 }
-/* line 35, ../sass/screen.scss */
+/* line 32, ../sass/screen.scss */
 svg.reactGraph path.colour1 {
   stroke: #97bbcd;
 }
-/* line 36, ../sass/screen.scss */
+/* line 33, ../sass/screen.scss */
 svg.reactGraph path.fill.colour1, svg.reactGraph g.fill.colour1 {
   fill: #97bbcd;
 }
-/* line 38, ../sass/screen.scss */
+/* line 35, ../sass/screen.scss */
 svg.reactGraph path.colour2 {
   stroke: #c86464;
 }
-/* line 39, ../sass/screen.scss */
+/* line 36, ../sass/screen.scss */
 svg.reactGraph path.fill.colour2, svg.reactGraph g.fill.colour2 {
   fill: #c86464;
 }
-/* line 41, ../sass/screen.scss */
+/* line 38, ../sass/screen.scss */
 svg.reactGraph .positive {
   clip-path: url("#positive");
 }
-/* line 42, ../sass/screen.scss */
+/* line 39, ../sass/screen.scss */
 svg.reactGraph .negative {
   clip-path: url("#negative");
 }

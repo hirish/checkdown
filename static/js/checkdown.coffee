@@ -184,13 +184,13 @@ MyDebtTable = React.createClass
 
       MyDebt debt: debt, isDebt: isDebt, cumulative: cumulative
 
-    (table {},
+    (table {className: "medium-12 columns"},
       (thead {},
         (tr {},
           (th {width: 100}, "Date")
           (th {}, "Description")
           (th {width: 80}, "Amount")
-          (th {className: "show-for-large-up", width: 80}, "Culmulative")
+          (th {className: "show-for-medium-up", width: 80}, "Culmulative")
         )
       )
       (tbody {},
@@ -212,7 +212,7 @@ MyDebt = React.createClass
       (td {}, date),
       (td {}, description)
       (td {}, '$' + amount)
-      (td {className: "show-for-large-up"}, '$' + cumulative)
+      (td {className: "show-for-medium-up"}, '$' + cumulative)
     )
 
 MyButtons = React.createClass
