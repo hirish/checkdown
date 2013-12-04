@@ -195,7 +195,7 @@ MyUser = React.createClass({
   render: function() {
     var a, div, h2, i, total, ul, values, xs, ys, _i, _ref;
     _ref = React.DOM, div = _ref.div, a = _ref.a, ul = _ref.ul, h2 = _ref.h2;
-    total = 10;
+    total = this.props.debts.lenderIs(this.props.user).totalAmount() - this.props.debts.debtorIs(this.props.user).totalAmount();
     xs = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60];
     ys = [0, 40, -150, -130, -50, -20, 40, 0, 80, 90, 100];
     values = [];
@@ -264,7 +264,7 @@ MyDebt = React.createClass({
     _ref = React.DOM, tr = _ref.tr, td = _ref.td;
     return tr({
       className: type
-    }, td({}, date + ': '), td({}, description), td({}, '$' + amount), td({
+    }, td({}, date), td({}, description), td({}, '$' + amount), td({
       className: "show-for-large-up"
     }, '$' + cumulative));
   }
@@ -274,11 +274,11 @@ MyButtons = React.createClass({
   render: function() {
     var buttons, total;
     total = this.props.total;
-    if (total > 0) {
+    if (total < 0) {
       buttons = MyPaymentButtons({
         total: total
       });
-    } else if (total < 0) {
+    } else {
       buttons = MyChargeButtons({
         total: total
       });
@@ -295,7 +295,7 @@ MyButtons = React.createClass({
 MyPaymentButtons = React.createClass({
   render: function() {
     var total;
-    total = this.props.total;
+    total = Math.abs(this.props.total);
     return React.DOM.div({}, React.DOM.button({
       className: "button tiny radius"
     }, "Pay $" + total), " ", React.DOM.button({

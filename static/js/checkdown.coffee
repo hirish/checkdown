@@ -152,8 +152,7 @@ MyList = React.createClass
 MyUser = React.createClass
   render: ->
     {div, a, ul, h2} = React.DOM
-    # total = @props.debts.totalAmount() - @props.loans.totalAmount()
-    total = 10
+    total = @props.debts.lenderIs(@props.user).totalAmount() - @props.debts.debtorIs(@props.user).totalAmount()
 
     xs = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60]
     ys = [0, 40, -150, -130, -50, -20, 40, 0, 80, 90, 100]
@@ -210,7 +209,7 @@ MyDebt = React.createClass
 
     {tr, td} = React.DOM
     (tr {className: type},
-      (td {}, date + ': '),
+      (td {}, date),
       (td {}, description)
       (td {}, '$' + amount)
       (td {className: "show-for-large-up"}, '$' + cumulative)
@@ -220,16 +219,16 @@ MyButtons = React.createClass
   render: ->
     total = @props.total
 
-    if total > 0
+    if total < 0
       buttons = MyPaymentButtons({total: total})
-    else if total < 0
+    else
       buttons = MyChargeButtons({total: total})
 
     React.DOM.div {className: "text-center", style: {width: "100%"}}, buttons
 
 MyPaymentButtons = React.createClass
   render: ->
-    total = @props.total
+    total = Math.abs @props.total
 
     React.DOM.div({},
       React.DOM.button({className: "button tiny radius"}
