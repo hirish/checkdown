@@ -56,6 +56,10 @@ Debts = Backbone.Collection.extend
     return new Debts @filter (debt) ->
       debt.get('debtor').id == user.id
 
+  between: (user1, user2) ->
+    return new Debts @filter (debt) ->
+      debt.get('debtor').id == user1.id and debt.get('lender').id == user2.id or debt.get('debtor').id == user2.id and debt.get('lender').id == user1.id
+
   groupByDebtor: ->
     grouped = @groupBy (debt) ->
       debt.get('debtor').get('username')
@@ -134,15 +138,12 @@ MyList = React.createClass
 
     # renderedUsers = groupedDebtsArray.map (group) =>
     renderedUsers = @state.users.map (otherUser) =>
-      debts = @props.debts.debtorIs(@state.user).lenderIs(otherUser)
-      loans = @props.debts.lenderIs(@state.user).debtorIs(otherUser)
-
-      if debts.length > 0 or loans.length > 0
+      debts = @props.debts.between(@state.user, otherUser)
+      if debts.length > 0
         MyUser
           user: @state.user
-          username: otherUser.get('username')
+          otherUser: otherUser
           debts: debts
-          loans: loans
       else
         return
 
@@ -150,47 +151,52 @@ MyList = React.createClass
 
 MyUser = React.createClass
   render: ->
-    {div, a, ul} = React.DOM
-    total = @props.debts.totalAmount() - @props.loans.totalAmount()
+    {div, a, ul, h2} = React.DOM
+    # total = @props.debts.totalAmount() - @props.loans.totalAmount()
+    total = 10
 
-    if total > 0
-      startText = "You owe "
-      renderedAmount = " a total of $" + total + ". "
-    else if total < 0
-      startText = "You are owed by "
-      renderedAmount = " a total of $" + Math.abs(total) + ". "
-
-    topText = [
-      startText
-      (a {style: {'font-weight': 'bold'}}, @props.username)
-      renderedAmount
-    ]
-
-    if @props.debts.length > 0
-      renderedDebts = @props.debts.map (debt) -> MyDebt debt: debt, isDebt: true
-
-      debts = [
-        "You owe "
-        (a {style: {'font-weight': 'bold'}}, @props.username)
-        " for:"
-        (ul {className: "fa-ul debt-details large-6 columns"}, renderedDebts)
-      ]
-    else debts = []
-
-    if @props.loans.length > 0
-      renderedLoans = @props.loans.map (debt) -> MyDebt debt: debt, isDebt: false
-      loans = [
-        (a {style: {'font-weight': 'bold'}}, @props.username)
-        " owes you for:"
-        (ul {className: "fa-ul debt-details"}, renderedLoans)
-      ]
-    else loans = []
+    xs = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60]
+    ys = [0, 40, -150, -130, -50, -20, 40, 0, 80, 90, 100]
+    values = []
+    for i in [0..10]
+      values.push {x:xs[i], y:ys[i]}
 
     (div {className: "person-debt"},
-      topText,
-      debts
-      loans
+      (h2 {}, @props.otherUser.get('username'))
+      (div {className: "graph"},
+        (LineGraph {normaliseYAxis: true, autoResize: true, valueLists: [values]})
+      )
+      (MyDebtTable {debts: @props.debts, user: @props.user})
       (MyButtons {total: total})
+    )
+
+MyDebtTable = React.createClass
+  render: ->
+    {table, thead, tr, th, td, tbody} = React.DOM
+
+    cumulative = 0
+    debtLines = @props.debts.map (debt) =>
+      isDebt = (debt.get('debtor').id == @props.user.id)
+
+      if isDebt
+        cumulative -= debt.get('amount')
+      else
+        cumulative += debt.get('amount')
+
+      MyDebt debt: debt, isDebt: isDebt, cumulative: cumulative
+
+    (table {},
+      (thead {},
+        (tr {},
+          (th {width: 100}, "Date")
+          (th {}, "Description")
+          (th {width: 80}, "Amount")
+          (th {className: "show-for-large-up", width: 80}, "Culmulative")
+        )
+      )
+      (tbody {},
+        debtLines
+      )
     )
 
 MyDebt = React.createClass
@@ -198,18 +204,16 @@ MyDebt = React.createClass
     date = "08-22-2012"
     description = @props.debt.get('description')
     amount = @props.debt.get('amount')
+    cumulative = @props.cumulative
 
-    if @props.isDebt
-      color = 'alert'
-    else
-      color = 'success'
+    type = if @props.isDebt then 'debt' else 'loan'
 
-    {li, i, span} = React.DOM
-    (li {},
-      (i {className: "fa-li fa fa-arrow-circle-right"}),
-      (span {className: 'date'}, date + ': '),
-      (span {className: 'description'}, description)
-      (span {className: 'label right radius ' + color}, '$' + amount)
+    {tr, td} = React.DOM
+    (tr {className: type},
+      (td {}, date + ': '),
+      (td {}, description)
+      (td {}, '$' + amount)
+      (td {className: "show-for-large-up"}, '$' + cumulative)
     )
 
 MyButtons = React.createClass
@@ -257,3 +261,12 @@ $ ->
 
   React.renderComponent RecentList({debts: debts}), $('#debtviewholder')[0]
   React.renderComponent MyList({userId: userId, debts: debts, users: users}), $('#owe')[0]
+# 
+#   xs = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60]
+#   ys = [0, 40, -150, -130, -50, -20, 40, 0, 80, 90, 100]
+#   values = []
+#   for i in [0..10]
+#     values.push {x:xs[i], y:ys[i]}
+#   window.v = values
+# 
+#   React.renderComponent LineGraph({normaliseYAxis: true, valueLists: [values], parent: $('#other')}), $('#other')[0]

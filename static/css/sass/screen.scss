@@ -137,6 +137,20 @@ select, input {
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(0,0,0,0.2);
   border-top: 1px solid rgba(255,255,255,0.5);
+
+  .graph {
+    height: 100px;
+  }
+
+  table{
+
+    margin: 20px 0;
+
+    tr.debt {background-color: rgba(255,200,200,1)}
+    tr.loan {background-color: rgba(200,255,200,1)}
+
+  }
+
 }
 
 .person-debt:first-child{ border-top: none; padding-top: 0px; }
