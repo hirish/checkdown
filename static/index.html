@@ -116,9 +116,17 @@
     $(document).foundation();
   </script>
 
+  <div id="login">
+    <div class="section row">
+      <div class="small-9 small-centered columns">
+        <h1>GODUT.CH</h1>
+        <h2>Please Login</h2>
+        <div id="fb-root"></div>
+        <fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
+      </div>
+    </div>
+  </div>
 
-
-  <div id="fb-root"></div>
   <script>
     window.fbAsyncInit = function() {
     FB.init({
@@ -130,7 +138,7 @@
 
     FB.Event.subscribe('auth.authResponseChange', function(response) {
       if (response.status === 'connected') {
-        testAPI();
+        $('#login').addClass('off')
       } else if (response.status === 'not_authorized') {
         FB.login();
       } else {
@@ -154,8 +162,6 @@
       });
     }
   </script>
-
-  <fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
 
 </body>
 </html>
