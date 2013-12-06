@@ -1,10 +1,17 @@
 from flask import abort, request, render_template
 from models import User, Debt
 from config import app, db
+import facebook
 import json
 
 @app.route('/')
 def index():
+    print "Test"
+    print request.cookies
+    try:
+      print facebook.get_user_from_cookie(request.cookies, "422041944562938", "0b08e0196edc9f7e2e301fbe14303b94")
+    except Exception as e:
+      print e
     #return 'Us teabagging Billsup.<br /><br/>ASCII-art coming soon.'
     return app.send_static_file('index.html')
 
@@ -196,9 +203,10 @@ def create_debt():
         app.logger.error(e)
         abort(500)
 
-# @app.errorhandler(404)
+@app.errorhandler(404)
 @app.errorhandler(500)
 def fail(error):
+    print error
     colours = {404: "#036", 500: "#900"}
     colour = colours.get(error.code, "#000")
     return render_template('error.html', error=error.code, colour=colour), error.code
