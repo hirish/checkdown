@@ -158,6 +158,13 @@ RecentDebt = React.createClass({
 MyList = React.createClass({
   getInitialState: function() {
     var _this = this;
+    this.props.users.on('change add remove', function(e) {
+      return _this.setState({
+        debts: _this.props.debts,
+        users: _this.props.users,
+        user: _this.props.users.get(_this.props.userId)
+      });
+    });
     this.props.debts.on('change add remove', function(e) {
       return _this.setState({
         debts: _this.props.debts,
@@ -317,20 +324,51 @@ MyChargeButtons = React.createClass({
 });
 
 $(function() {
-  var debts, userId, users;
-  window.users = users = new Users();
-  users.fetch();
-  window.debts = debts = new Debts();
-  debts.fetch({
-    users: users
-  });
-  userId = 2;
-  React.renderComponent(RecentList({
-    debts: debts
-  }), $('#debtviewholder')[0]);
-  return React.renderComponent(MyList({
-    userId: userId,
-    debts: debts,
-    users: users
-  }), $('#owe')[0]);
+  var testAPI;
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId: '422041944562938',
+      status: true,
+      cookie: true,
+      xfbml: true
+    });
+    return FB.Event.subscribe('auth.authResponseChange', function(response) {
+      var debts, userId, users;
+      if (response.status === 'connected') {
+        $('#login').addClass('off');
+        window.users = users = new Users();
+        users.fetch();
+        window.debts = debts = new Debts();
+        debts.fetch({
+          users: users
+        });
+        userId = 2;
+        window.recentlist = React.renderComponent(RecentList({
+          debts: debts
+        }), $('#debtviewholder')[0]);
+        return window.mylist = React.renderComponent(MyList({
+          userId: userId,
+          debts: debts,
+          users: users
+        }), $('#owe')[0]);
+      } else if (response.status === 'not_authorized') {
+        return FB.login();
+      } else {
+        return FB.login();
+      }
+    });
+  };
+  (function(d){
+   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement('script'); js.id = id; js.async = true;
+   js.src = "//connect.facebook.net/en_US/all.js";
+   ref.parentNode.insertBefore(js, ref);
+  }(document));;
+  return testAPI = function() {
+    console.log('Welcome!  Fetching your information.... ');
+    return FB.api('/me', function(response) {
+      return console.log('Good to see you, ' + response.name + '.');
+    });
+  };
 });

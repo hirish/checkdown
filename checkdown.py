@@ -3,6 +3,27 @@ from models import User, Debt
 from config import app, db
 import facebook
 import json
+from functools import wraps
+
+def facebook_auth(function):
+    @wraps(function)
+    def wrapper(*args, **kwds):
+        try:
+            user = facebook.get_user_from_cookie(request.cookies, "422041944562938", "0b08e0196edc9f7e2e301fbe14303b94")
+            facebook_id = user['uid']
+        except TypeError:
+            print "User not logged in."
+            abort(403)
+
+        user = User.query.filter_by(facebook_id = facebook_id).first()
+        if not user:
+            abort(403)
+
+        return function(*args, **kwds)
+
+    return wrapper
+
+
 
 @app.route('/')
 def index():
@@ -12,10 +33,25 @@ def index():
       print facebook.get_user_from_cookie(request.cookies, "422041944562938", "0b08e0196edc9f7e2e301fbe14303b94")
     except Exception as e:
       print e
-    #return 'Us teabagging Billsup.<br /><br/>ASCII-art coming soon.'
     return app.send_static_file('index.html')
 
+@app.route('/user', methods=['GET'])
+def get_logged_in_user():
+    try:
+        user = facebook.get_user_from_cookie(request.cookies, "422041944562938", "0b08e0196edc9f7e2e301fbe14303b94")
+        facebook_id = user['uid']
+    except TypeError:
+        print "User not logged in."
+        abort(403)
+
+    user = User.query.filter_by(facebook_id = facebook_id).first()
+    if not user:
+        abort(403)
+
+    return user.json()
+
 @app.route('/users', methods=['GET', 'POST'])
+@facebook_auth
 def get_users():
     if request.method == "POST":
         try:
@@ -48,6 +84,7 @@ def get_users():
         return json.dumps([ user.dictify() for user in users ] )
 
 @app.route('/debts', methods=['GET', 'POST'])
+@facebook_auth
 def get_debts(group_id = None):
     if request.method == 'GET':
         debts = Debt.query.all()
@@ -81,6 +118,7 @@ def get_debts(group_id = None):
 
 
 @app.route('/debts/<debt_id>', methods=['GET', 'PUT', 'DELETE'])
+@facebook_auth
 def update_debt(debt_id, group_id = None):
     debt = Debt.query.get(debt_id)
     if request.method == 'GET':
@@ -126,6 +164,7 @@ def user_in_group(user, group):
     return True
 
 @app.route('/users/<user_id>', methods=['GET', 'PUT', 'DELETE'])
+@facebook_auth
 def get_user(user_id):
     user = User.query.get(user_id)
     if request.method == 'GET':
@@ -142,11 +181,13 @@ def get_user(user_id):
 
 
 @app.route('/user/<user_id>/debts')
+@facebook_auth
 def get_user_debts(user_id):
     debts = User.query.get(user_id).debts
     return json.dumps({'debts': [ debt.dictify() for debt in debts ]})
 
 @app.route('/user/<user_id>/loans')
+@facebook_auth
 def get_user_loans(user_id):
     loans = User.query.get(user_id).loans
     return json.dumps({'loans': [ loan.dictify() for loan in loans ]})
@@ -174,6 +215,7 @@ def create_user():
         abort(500)
 
 @app.route('/create/debt', methods=['POST'])
+@facebook_auth
 def create_debt():
     try:
         debtor_id = int(request.form['debtor_id'])
@@ -184,15 +226,15 @@ def create_debt():
 
         amount = int(request.form['amount'])
         if amount == 0:
-          raise Exception('Amount is 0.')
+            raise Exception('Amount is 0.')
         elif amount < 0:
-          raise Exception('Amount cannot be less than 0.')
+            raise Exception('Amount cannot be less than 0.')
 
         description = request.form['description']
         description = description.strip()
 
         if len(description) == 0:
-          raise Exception('Decription cannot be empty.')
+            raise Exception('Decription cannot be empty.')
 
         new_debt = Debt(debtor, lender, amount, description)
         db.session.add(new_debt)

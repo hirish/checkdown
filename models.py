@@ -7,6 +7,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True)
+    facebook_id = db.Column(db.Integer, unique=True)
 
     debts = db.relationship('Debt',
                             backref='debtor',
@@ -16,9 +17,10 @@ class User(db.Model):
                             backref='lender',
                             foreign_keys='Debt.lender_id')
 
-    def __init__(self, username, email):
+    def __init__(self, username, email, facebook_id):
         self.username = username
         self.email = email
+        self.facebook_id = facebook_id
 
     def dictify(self):
         return {

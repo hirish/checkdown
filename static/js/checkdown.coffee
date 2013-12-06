@@ -117,6 +117,11 @@ RecentDebt = React.createClass
 
 MyList = React.createClass
   getInitialState: ->
+    @props.users.on 'change add remove', (e) =>
+      @setState 
+        debts: @props.debts
+        users: @props.users
+        user: @props.users.get(@props.userId)
     @props.debts.on 'change add remove', (e) =>
       @setState 
         debts: @props.debts
@@ -250,16 +255,44 @@ MyChargeButtons = React.createClass
     )
 
 $ ->
-  window.users = users = new Users()
-  users.fetch()
+  window.fbAsyncInit = ->
+    FB.init
+      appId      : '422041944562938'
+      status     : true
+      cookie     : true
+      xfbml      : true
 
-  window.debts = debts = new Debts()
-  debts.fetch users: users
+    FB.Event.subscribe 'auth.authResponseChange', (response) ->
+      if response.status == 'connected'
+        $('#login').addClass 'off'
+        window.users = users = new Users()
+        users.fetch()
 
-  userId = 2
+        window.debts = debts = new Debts()
+        debts.fetch users: users
 
-  React.renderComponent RecentList({debts: debts}), $('#debtviewholder')[0]
-  React.renderComponent MyList({userId: userId, debts: debts, users: users}), $('#owe')[0]
+        userId = 2
+
+        window.recentlist = React.renderComponent RecentList({debts: debts}), $('#debtviewholder')[0]
+        window.mylist = React.renderComponent MyList({userId: userId, debts: debts, users: users}), $('#owe')[0]
+      else if response.status == 'not_authorized'
+        FB.login()
+      else
+        FB.login()
+
+  `(function(d){
+   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement('script'); js.id = id; js.async = true;
+   js.src = "//connect.facebook.net/en_US/all.js";
+   ref.parentNode.insertBefore(js, ref);
+  }(document));`
+
+  testAPI = ->
+    console.log 'Welcome!  Fetching your information.... '
+    FB.api '/me', (response) ->
+      console.log 'Good to see you, ' + response.name + '.'
+
 # 
 #   xs = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60]
 #   ys = [0, 40, -150, -130, -50, -20, 40, 0, 80, 90, 100]

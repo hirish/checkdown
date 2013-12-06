@@ -1,18 +1,16 @@
-from model import *
+from models import *
 
 db.create_all()
 
-b = User('barndawg', 'barn@dawg.com')
-h = User('henoogle', 'henry@irish.com')
-
-db.session.add(b)
-db.session.add(h)
-
-d = Debt(b, h, 100)
-
-db.session.add(d)
-
 db.session.commit()
 
-print User.query.all()
-print Debt.query.all()
+db.session.add(User('barndawg', 'barn@dawg.com', 1101575668))
+db.session.add(User('henoogle', 'henry@irish.com', None))
+db.session.add(User('test', None, None))
+db.session.add(User('knife', None, None))
+db.session.add(User('sausage', None, None))
+db.session.add(User('lee.woodbridge', None, None))
+db.session.add(User('matt.bessey', None, None))
+db.session.add(User('henry', 'chocolate', None))
+
+db.session.commit()
