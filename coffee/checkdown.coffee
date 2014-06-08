@@ -290,7 +290,7 @@ Settings = React.createClass
         debt =
             user: parseInt user
             description: description
-						group: @props.selectedGroup
+            group: @props.selectedGroup
             amount:
                 if (parseInt amount).toString() is "NaN"
                     0

@@ -149,7 +149,7 @@ Application = React.createClass({displayName: 'Application',
                 TitleText( {text:titleText} ),
                 GroupList( {groups:this.props.groups, selectedGroup:selectedGroup, selectGroup:this.selectGroup} ),
                 DebtList( {debts:debts, user:this.props.user, users:this.props.users} ),
-                Settings( {createDebt:this.createDebt} )
+                Settings( {createDebt:this.createDebt, selectedGroup:selectedGroup} )
             );
   }
 });
@@ -321,6 +321,7 @@ Settings = React.createClass({displayName: 'Settings',
     debt = {
       user: parseInt(user),
       description: description,
+      group: this.props.selectedGroup,
       amount: (parseInt(amount)).toString() === "NaN" ? 0 : type === 'charge' ? parseInt(amount) : 0 - (parseInt(amount))
     };
     this.props.createDebt(debt);
