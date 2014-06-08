@@ -1,0 +1,43 @@
+@mixin button($color) {
+    background-color: $color;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 20px;
+    color: rgba(255,255,255,0.9);
+    margin: 0 3px;
+
+    font-size: 11px;
+    font-weight: bold;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: uppercase;
+
+    transition: 0.5s;
+
+    &:hover {
+        background-color: lighten($color, 10%);
+        color: white;
+        cursor: pointer;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    i {
+        padding-right: 5px;
+    }
+}
+
+button {
+    @include button(#044);
+}
+
+button.green {
+    @include button(#271);
+}
+
+button.grey {
+    @include button(#555);
+}
+

@@ -3,6 +3,20 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
+@-webkit-keyframes inputError { }
+
+@-webkit-keyframes clouds { }
+
+@-webkit-keyframes back-clouds { }
+
+@-webkit-keyframes ship { }
+
+@-webkit-keyframes login { }
+
+@-webkit-keyframes nemo { }
+
+@-webkit-keyframes nemo-move { }
+
 button {
   background-color: #044;
   border: none;
@@ -153,13 +167,6 @@ table {
       color: #a22;
       cursor: pointer; }
 
-@-webkit-keyframes inputError {
-  0%, 100% {
-    padding-left: 5px; }
-
-  50% {
-    padding-left: 10px; } }
-
 input[type=text], input[type=password], select {
   height: 30px;
   border: 1px solid #999;
@@ -236,27 +243,6 @@ select {
     font-weight: normal;
     font-size: 25px;
     font-family: "Sanchez"; }
-
-@-webkit-keyframes clouds {
-  from {
-    left: -5%; }
-
-  to {
-    left: 100%; } }
-
-@-webkit-keyframes back-clouds {
-  from {
-    left: 100%; }
-
-  to {
-    left: -5%; } }
-
-@-webkit-keyframes ship {
-  0%, 100% {
-    -webkit-transform: rotate(-1deg); }
-
-  50% {
-    -webkit-transform: rotate(4deg); } }
 
 #sky {
   background-color: #7bdbeb;
@@ -395,16 +381,6 @@ select {
       width: 23.23176%; }
       #main .column.narrow:last-child, #login .column.narrow:last-child {
         margin-right: 0; }
-
-@-webkit-keyframes login {
-  0%, 40%, 44%, 100% {
-    -webkit-transform: rotate(0deg); }
-
-  41% {
-    -webkit-transform: rotate(-3deg); }
-
-  43% {
-    -webkit-transform: rotate(3deg); } }
 
 #login-options {
   margin-left: 25.58941%;
@@ -547,20 +523,6 @@ select {
   position: absolute;
   bottom: 35px;
   right: 20%; }
-
-@-webkit-keyframes nemo {
-  0%, 100% {
-    -webkit-transform: rotate(-6deg); }
-
-  50% {
-    -webkit-transform: rotate(-2deg); } }
-
-@-webkit-keyframes nemo-move {
-  from {
-    left: -5%; }
-
-  to {
-    left: 105%; } }
 
 .nemo {
   position: absolute;

@@ -1,6 +1,9 @@
 @import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
 @import "../bower_components/neat/app/assets/stylesheets/neat";
 
+@import "animations";
+@import "buttons";
+
 $color1: #b53;
 $color2: #b53;
 $color3: #374140;
@@ -21,49 +24,6 @@ $right_col_bg:  $color5;
 
 $header_font: "Sanchez";
 $body_font: "Open Sans";
-
-@mixin button($color) {
-    background-color: $color;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 20px;
-    color: rgba(255,255,255,0.9);
-    margin: 0 3px;
-
-    font-size: 11px;
-    font-weight: bold;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-transform: uppercase;
-
-    transition: 0.5s;
-
-    &:hover {
-        background-color: lighten($color, 10%);
-        color: white;
-        cursor: pointer;
-    }
-
-    &:focus {
-        outline: none;
-    }
-
-    i {
-        padding-right: 5px;
-    }
-}
-
-button {
-    @include button(#044);
-}
-
-button.green {
-    @include button(#271);
-}
-
-button.grey {
-    @include button(#555);
-}
 
 #swell {
     fill: $site_bg;
@@ -118,8 +78,6 @@ h1, h2, h3, h4 {
     font-size: 100%;
 }
 
-// h3 { font-family: $body_font; }
-
 table {
     margin: 0 0 20px;
     padding: 0px;
@@ -149,17 +107,6 @@ table {
 
     }
 
-}
-
-@-webkit-keyframes inputError {
-    0%, 100% {
-        padding-left: 5px;
-    }
-
-
-    50% {
-        padding-left: 10px;
-    }
 }
 
 input[type=text], input[type=password], select{
@@ -259,27 +206,6 @@ select {
         font-weight: normal;
         font-size: 25px;
         font-family: $header_font;
-    }
-}
-
-
-@-webkit-keyframes clouds {
-    from { left: -5%; }
-    to { left: 100%; }
-}
-
-@-webkit-keyframes back-clouds {
-    from { left: 100%; }
-    to { left: -5%; }
-}
-
-@-webkit-keyframes ship {
-    0%, 100% {
-        -webkit-transform: rotate(-1deg);
-    }
-
-    50% {
-        -webkit-transform: rotate(4deg);
     }
 }
 
@@ -395,18 +321,6 @@ select {
 
     }
 
-}
-
-@-webkit-keyframes login {
-    0%, 40%, 44%, 100% {
-        -webkit-transform: rotate(0deg);
-    }
-    41% {
-        -webkit-transform: rotate(-3deg);
-    }
-    43% {
-        -webkit-transform: rotate(3deg);
-    }
 }
 
 #login-options {
@@ -558,16 +472,6 @@ select {
     position: absolute;
     bottom: 35px;
     right: 20%;
-}
-
-@-webkit-keyframes nemo {
-    0%, 100% { -webkit-transform: rotate(-6deg); }
-    50% { -webkit-transform: rotate(-2deg); }
-}
-
-@-webkit-keyframes nemo-move {
-    from { left: -5%; }
-    to { left: 105%; }
 }
 
 .nemo {
