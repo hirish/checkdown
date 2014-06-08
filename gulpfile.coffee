@@ -2,7 +2,7 @@ gulp       = require 'gulp'
 coffee     = require 'gulp-coffee'
 gutil      = require 'gulp-util'
 react      = require 'gulp-react'
-sass       = require 'gulp-sass'
+sass       = require 'gulp-ruby-sass'
 concat     = require 'gulp-concat'
 
 gulp.task 'scss', ->
