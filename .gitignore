@@ -37,3 +37,6 @@ nosetests.xml
 
 venv/
 *.swp
+.DS_STORE
+bower_components
+node_modules
