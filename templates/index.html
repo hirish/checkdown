@@ -1,0 +1,95 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+
+  <title>GoDutch</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Sanchez:400|Open+Sans:400italic,600italic,400,600|Open+Sans+Condensed:300,700,300italic' rel='stylesheet' type='text/css'>
+    <link type="text/css" rel="stylesheet" href="/checkdown.css" />
+
+</head>
+
+<body>
+
+    <div id="sky">
+        <img src="/img/ship.png" class="ship" />
+        <div class="clip-ship"></div>
+
+        <div class="cloud1"></div>
+        <img src="/img/cloud1.png" class="cloud2" />
+        <img src="/img/cloud2.png" class="cloud3" />
+        <img src="/img/cloud2.png" class="cloud4" />
+
+        <img src="/img/2gulls.png" class="gulls1" />
+        <img src="/img/4gulls.png" class="gulls2" />
+
+        <svg width='100%'>
+            <ellipse id="swell" cx="50%" cy="160" rx="75%" ry="15" />
+        </svg>
+
+    </div>
+
+    <div id="main"></div>
+
+    <div id="footer">
+
+        Copyright Henry Irish - me@henryirish.com
+
+        <img src="/img/seaweed.png" class="seaweed" />
+
+    </div>
+
+    <img src="/img/nemo.png" class="nemo" />
+
+
+    <script src="/jquery.min.js"></script>
+    <script src="/underscore.js"></script>
+    <script src="/backbone.js"></script>
+    <script src="/react-with-addons.js"></script>
+
+    <!-- ReactGraph -->
+    <script src="/reactGraph/reactGraph.js"></script>
+    <link type="text/css" rel="stylesheet" href="/reactGraph/reactGraph.css" />
+
+    <!-- Custom CSS/JS -->
+    <script src="/checkdown.js"></script>
+
+    <div id="login">
+        <div id="logo"> <h1>Please Login</h1> </div>
+
+        <div id="login-options" class="column wider">
+
+            <div class="card">
+                <button id="facebook-login">
+                    <i class="fa fa-facebook"></i>
+                    Login or Register with Facebook
+                </button><br/><br/>
+                We will never make posts on your behalf.
+                <!-- <button id="facebook&#45;register"> -->
+                <!--     <i class="fa fa&#45;facebook"></i> -->
+                <!--     Sign Up with Facebook -->
+                <!-- </button> -->
+                <!-- <div id="fb&#45;root"></div> -->
+                <!-- <fb:login&#45;button show&#45;faces="true" width="200" max&#45;rows="1" scope="email"></fb:login&#45;button> -->
+            </div>
+            <!-- <div id="new&#45;debt" class="card"> -->
+            <!--     <h3> -->
+            <!--         Email -->
+            <!--     </h3> -->
+            <!--     <form action="/create/debt" method="post"> -->
+            <!--         <div> -->
+            <!--             <input name="amount" type="text" placeholder="Username" /> -->
+            <!--             <input name="description" type="password" placeholder="Password" /> -->
+            <!--             <button>Login</button> -->
+            <!--         </div> -->
+            <!--     </form> -->
+            <!-- </div> -->
+        </div>
+    </div>
+
+    <script>
+    </script>
+
+</body>
+</html>
