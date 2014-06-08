@@ -6,7 +6,7 @@ db.session.commit()
 
 barn =  User('Barnaby Jackson', 'barnaby@henryirish.com', None)
 henry = User('Henry Irish', 'facebook@henryirish.com', 1101575668)
-fred =  User('Fred Kelly', 'fred@henryirish.com', None)
+fred =  User('Fred Kelly', 'fred@henryirish.com', 590344115)
 matt =  User('Matt Bessey', 'matt@henryirish.com', None)
 nick =  User('Nick Sampson', 'nick@henryirish.com', None)
 lee  =  User('Lee Woodbridge', 'lee@henryirish.com', None)

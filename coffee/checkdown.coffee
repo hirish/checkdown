@@ -98,7 +98,7 @@ Application = React.createClass
         @setState selectedGroup: id
 
     createDebt: (debt) ->
-        $.post '/create/debt', debt
+        $.post '/debt', debt
           .done ->
               console.log "Posted"
           .fail ->

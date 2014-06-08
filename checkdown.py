@@ -238,23 +238,30 @@ def create_user():
         app.logger.error(e)
         abort(500)
 
-@app.route('/create/debt', methods=['POST'])
+@app.route('/debt', methods=['POST'])
 @facebook_auth
 def create_debt():
-    print request.form
-    abort(500)
     try:
-        debtor_id = int(request.form['debtor_id'])
-        lender_id = int(request.form['lender_id'])
+        group_id = int(request.form['group'])
+        group = Group.query.get(group_id)
 
-        debtor = User.query.get(debtor_id)
-        lender = User.query.get(lender_id)
+        other_id = int(request.form['user'])
+        other = User.query.get(other_id)
 
         amount = int(request.form['amount'])
+        debtor = lender = None
+
         if amount == 0:
             raise Exception('Amount is 0.')
         elif amount < 0:
-            raise Exception('Amount cannot be less than 0.')
+            # I owe other
+            debtor = g.user
+            lender = other
+            amount *= -1
+        elif amount > 0:
+            # other owes me
+            debtor = other
+            lender = g.user
 
         description = request.form['description']
         description = description.strip()
@@ -262,7 +269,8 @@ def create_debt():
         if len(description) == 0:
             raise Exception('Decription cannot be empty.')
 
-        new_debt = Debt(debtor, lender, amount, description)
+        new_debt = Debt(debtor, lender, group, amount, description)
+
         db.session.add(new_debt)
         db.session.commit()
 

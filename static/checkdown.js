@@ -133,7 +133,7 @@ Application = React.createClass({displayName: 'Application',
     });
   },
   createDebt: function(debt) {
-    return $.post('/create/debt', debt).done(function() {
+    return $.post('/debt', debt).done(function() {
       return console.log("Posted");
     }).fail(function() {
       return console.log("Failed");

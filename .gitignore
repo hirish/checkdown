@@ -40,3 +40,4 @@ venv/
 .DS_STORE
 bower_components
 node_modules
+test.db
