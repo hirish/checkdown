@@ -126,7 +126,7 @@ Application = React.createClass
                 <TitleText text={titleText} />
                 <GroupList groups={this.props.groups} selectedGroup={selectedGroup} selectGroup={this.selectGroup} />
                 <DebtList debts={debts} user={this.props.user} users={this.props.users} />
-                <Settings createDebt={this.createDebt} />
+                <Settings createDebt={this.createDebt} selectedGroup={selectedGroup} />
             </div>`
 
 TitleText = React.createClass
@@ -290,6 +290,7 @@ Settings = React.createClass
         debt =
             user: parseInt user
             description: description
+						group: @props.selectedGroup
             amount:
                 if (parseInt amount).toString() is "NaN"
                     0
