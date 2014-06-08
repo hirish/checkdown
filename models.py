@@ -1,13 +1,23 @@
 from config import db
 import json
 
+groups = db.Table('groups',
+    db.Column('group_id', db.Integer, db.ForeignKey('group.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
+
 class User(db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
+    username = db.Column(db.String(80))
     email = db.Column(db.String(120), unique=True)
     facebook_id = db.Column(db.Integer, unique=True)
+    groups = db.relationship(
+        'Group',
+        secondary=groups,
+        backref=db.backref('users')
+    )
 
     debts = db.relationship('Debt',
                             backref='debtor',
@@ -26,7 +36,8 @@ class User(db.Model):
         return {
             'id' : self.id,
             'username' : self.username,
-            'email' : self.email
+            'email' : self.email,
+            'groups' : [group.id for group in self.groups]
         }
 
     def json(self):
@@ -35,6 +46,25 @@ class User(db.Model):
     def __repr__(self):
         return '[User %r]' % self.username
 
+class Group(db.Model):
+    __table__name = 'group'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    debts = db.relationship('Debt',
+                            backref='group',
+                            foreign_keys='Debt.group_id')
+
+    def __init__(self, name):
+        self.name = name
+
+    def dictify(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
+    def __repr__(self):
+        return '[Group %r]' % self.name
 
 class Debt(db.Model):
     __tablename__ = 'debt'
@@ -43,6 +73,8 @@ class Debt(db.Model):
 
     debtor_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     lender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
 
     # Stored as no. cents
     amount = db.Column(db.Integer)
@@ -53,9 +85,10 @@ class Debt(db.Model):
 
     description = db.Column(db.String(300))
 
-    def __init__(self, debtor, lender, amount, description):
+    def __init__(self, debtor, lender, group, amount, description):
         self.debtor = debtor
         self.lender = lender
+        self.group = group
         self.amount = amount
         self.description = description
         self.paid = False
@@ -63,8 +96,9 @@ class Debt(db.Model):
     def dictify(self):
         return {
             'id' : self.id,
-            'debtor' : self.debtor.dictify(),
-            'lender' : self.lender.dictify(),
+            'debtor_id' : self.debtor.id,
+            'lender_id' : self.lender.id,
+            'group_id': self.group.id,
             'amount' : self.amount,
             'paid' : self.paid,
             'created' : str(self.created),

@@ -1,94 +1,118 @@
-from flask import abort, request, render_template
-from models import User, Debt
-from config import app, db
+"""
+This is a docstring
+"""
+
+from flask import abort, request, render_template, jsonify, json, g, redirect
+from models import User, Debt, Group
+from config import app, db, app_id, app_key
 import facebook
-import json
 from functools import wraps
 
+def get_logged_in_user():
+    "Returns the logged in user or 'None' if no user is logged in"
+    try:
+        user_details = facebook.parse_signed_request(
+            request.cookies['fbsr_' + app_id],
+            app_key
+        )
+        facebook_id = user_details['user_id']
+        g.facebook_user_details = user_details
+        return User.query.filter_by(facebook_id = facebook_id).first()
+    except (KeyError, TypeError):
+        return None
+
 def facebook_auth(function):
+    "Check whether user is logged in, 503 Unauthorized if not"
     @wraps(function)
     def wrapper(*args, **kwds):
-        try:
-            user = facebook.get_user_from_cookie(request.cookies, "422041944562938", "0b08e0196edc9f7e2e301fbe14303b94")
-            facebook_id = user['uid']
-        except TypeError:
-            print "User not logged in."
-            abort(403)
-
-        user = User.query.filter_by(facebook_id = facebook_id).first()
+        "Closure checks whether user is logged in, otherwise fires function"
+        user = get_logged_in_user()
         if not user:
             abort(403)
-
+        g.user = user
         return function(*args, **kwds)
-
     return wrapper
-
-
 
 @app.route('/')
 def index():
-    print "Test"
-    print request.cookies
-    try:
-      print facebook.get_user_from_cookie(request.cookies, "422041944562938", "0b08e0196edc9f7e2e301fbe14303b94")
-    except Exception as e:
-      print e
-    return app.send_static_file('index.html')
+    "Default homepage, served statically"
+    if get_logged_in_user():
+        # TODO: Prepopulate data and hide login screen.
+        return render_template('index.html')
+    else:
+        return render_template('index.html')
 
-@app.route('/user', methods=['GET'])
-def get_logged_in_user():
-    try:
-        user = facebook.get_user_from_cookie(request.cookies, "422041944562938", "0b08e0196edc9f7e2e301fbe14303b94")
-        facebook_id = user['uid']
-    except TypeError:
-        print "User not logged in."
+@app.route('/user')
+def get_user():
+    "Returns currently logged in user, registering a new user if necessary"
+    user = get_logged_in_user()
+    if not 'facebook_user_details' in g:
         abort(403)
-
-    user = User.query.filter_by(facebook_id = facebook_id).first()
     if not user:
+        fb_code = g.facebook_user_details['code']
+        fb_access_token = facebook.get_access_token_from_code(
+            fb_code,
+            '',
+            app_id,
+            app_key
+        )['access_token']
+
+        graph = facebook.GraphAPI(fb_access_token)
+        fb_details = graph.get_object('me')
+
+        username = fb_details['name']
+        email = fb_details['email']
+        facebook_id = g.facebook_user_details['user_id']
+
+        user = User(username, email, facebook_id)
+        db.session.add(user)
+        db.session.commit()
+
+    return jsonify(user = user.dictify())
+
+@app.route('/logout')
+def logout():
+    response = redirect('/')
+    response.set_cookie('fbsr_' + app_id, '')
+    return response
+
+@app.route('/group/<group_id>')
+@facebook_auth
+def get_group_name(group_id):
+    group = Group.query.get(group_id)
+    if not group:
+        abort(404)
+
+    return jsonify(group = group.dictify())
+
+@app.route('/group/<group_id>/users')
+@facebook_auth
+def get_users(group_id):
+    group  = Group.query.get(group_id)
+    if not group:
+        abort(404)
+
+    if not g.user in group.users:
         abort(403)
 
-    return user.json()
+    users = group.users
+    return jsonify(users = [user.dictify() for user in users])
 
-@app.route('/users', methods=['GET', 'POST'])
+@app.route('/group/<group_id>/debts', methods=['GET', 'POST'])
 @facebook_auth
-def get_users():
-    if request.method == "POST":
-        try:
-            username = request.json['username']
-            email = request.json['email']
-            username = username.strip()
-            email = email.strip()
-
-            if len(username) == 0 or len(email) == 0:
-                raise Exception("Failed, username empty.")
-
-            conflicts = User.query.filter_by(username=username).all()
-            if len(conflicts) > 0:
-                raise Exception("Failed, username already taken.")
-
-            conflicts = User.query.filter_by(email=email).all()
-            if len(conflicts) > 0:
-                raise Exception("Failed, email already taken.")
-
-            new_user = User(username, email)
-            db.session.add(new_user)
-            db.session.commit()
-
-            return json.dumps({'id': new_user.id})
-        except Exception as e:
-            app.logger.error(e)
-            abort(500)
-    elif request.method == "GET":
-        users = User.query.all()
-        return json.dumps([ user.dictify() for user in users ] )
-
-@app.route('/debts', methods=['GET', 'POST'])
-@facebook_auth
-def get_debts(group_id = None):
+def get_debts(group_id):
     if request.method == 'GET':
-        debts = Debt.query.all()
-        return json.dumps([ debt.dictify() for debt in debts ])
+        group  = Group.query.get(group_id)
+        if not group:
+            abort(404)
+
+        if not g.user in group.users:
+            abort(403)
+
+        print group.debts
+
+        debts = group.debts
+        return jsonify(debts = [ debt.dictify() for debt in debts ])
     elif request.method == 'POST':
         lender = User.query.get(request.json['lender']['id'])
         debtor = User.query.get(request.json['debtor']['id'])
@@ -119,7 +143,7 @@ def get_debts(group_id = None):
 
 @app.route('/debts/<debt_id>', methods=['GET', 'PUT', 'DELETE'])
 @facebook_auth
-def update_debt(debt_id, group_id = None):
+def debt(debt_id, group_id = None):
     debt = Debt.query.get(debt_id)
     if request.method == 'GET':
         return debt.json()
@@ -163,22 +187,22 @@ def update_debt(debt_id, group_id = None):
 def user_in_group(user, group):
     return True
 
-@app.route('/users/<user_id>', methods=['GET', 'PUT', 'DELETE'])
-@facebook_auth
-def get_user(user_id):
-    user = User.query.get(user_id)
-    if request.method == 'GET':
-        return user.json()
-    elif request.method == 'PUT':
-        email = request.json['email']
-        email.strip()
-        user.email = email
-        db.session.commit()
-        return user.json()
-    elif request.method == 'DELETE':
-        print "Authentication for user deletion not yet implemented"
-        abort(500)
-
+# @app.route('/users/<user_id>', methods=['GET', 'PUT', 'DELETE'])
+# @facebook_auth
+# def get_user(user_id):
+#     user = User.query.get(user_id)
+#     if request.method == 'GET':
+#         return user.json()
+#     elif request.method == 'PUT':
+#         email = request.json['email']
+#         email.strip()
+#         user.email = email
+#         db.session.commit()
+#         return user.json()
+#     elif request.method == 'DELETE':
+#         print "Authentication for user deletion not yet implemented"
+#         abort(500)
+#
 
 @app.route('/user/<user_id>/debts')
 @facebook_auth
@@ -217,6 +241,8 @@ def create_user():
 @app.route('/create/debt', methods=['POST'])
 @facebook_auth
 def create_debt():
+    print request.form
+    abort(500)
     try:
         debtor_id = int(request.form['debtor_id'])
         lender_id = int(request.form['lender_id'])
