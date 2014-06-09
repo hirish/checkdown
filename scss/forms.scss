@@ -1,0 +1,38 @@
+@import "config";
+@import "animations";
+
+input[type=text], input[type=password], select{
+    height: 30px;
+    border: 1px solid #999;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+    -webkit-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+
+    &:focus { outline: none; }
+
+    &.error {
+        @include animation(inputError 0.3s);
+        @include animation-iteration-count(2);
+        border-color: darken($color1, 10%);
+    }
+
+}
+
+select {
+    padding-right: 22px;
+}
+
+.fa-caret-down {
+    margin-left: -16px;
+    margin-right: 13px;
+    cursor: pointer;
+}
+
+.createDebt {
+    .who { width: 120px; }
+    .amount { width: 67px; }
+    .description { width: 100%; }
+}

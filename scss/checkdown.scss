@@ -6,17 +6,10 @@
 @import "buttons";
 @import "typography";
 @import "sky";
-
-#swell {
-    fill: $site_bg;
-}
+@import "forms";
 
 body {
     background-color: $site_bg;
-    font-family: $body_font;
-    font-size: 12px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     padding: 0px;
     margin: 0px;
     overflow-x: hidden;
@@ -62,36 +55,6 @@ table {
 
     }
 
-}
-
-input[type=text], input[type=password], select{
-    height: 30px;
-    border: 1px solid #999;
-    background-color: white;
-    border-radius: 5px;
-    padding: 5px;
-    -webkit-appearance: none;
-    text-indent: 0.01px;
-    text-overflow: '';
-
-    &:focus { outline: none; }
-    
-    &.error {
-        @include animation(inputError 0.3s);
-        @include animation-iteration-count(2);
-        border-color: darken($color1, 10%);
-    }
-
-}
-
-select {
-    padding-right: 22px;
-}
-
-.fa-caret-down {
-    margin-left: -16px;
-    margin-right: 13px;
-    cursor: pointer;
 }
 
 .card {
@@ -272,12 +235,9 @@ select {
 #details {
     color: white;
     background-color: $right_col_bg;
-
 }
 
 #login {
-
-
       .section {
         margin-top: 200px;
         padding: 20px 0;
@@ -286,7 +246,6 @@ select {
       h1, h2 {
         padding-bottom: 10px;
       }
-
 }
 
 #login.off {

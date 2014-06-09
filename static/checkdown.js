@@ -1,5 +1,5 @@
 /** @jsx React.DOM */;
-var Application, Debt, DebtList, DebtView, Debts, Group, GroupList, Groups, Price, Settings, TitleText, User, Users, facebookLoginCallback;
+var Application, Debt, DebtList, DebtView, Debts, Group, GroupList, Groups, Price, RightPanel, TitleText, User, Users, facebookLoginCallback;
 
 User = Backbone.Model.extend({
   toString: function() {
@@ -149,7 +149,7 @@ Application = React.createClass({displayName: 'Application',
                 TitleText( {text:titleText} ),
                 GroupList( {groups:this.props.groups, selectedGroup:selectedGroup, selectGroup:this.selectGroup} ),
                 DebtList( {debts:debts, user:this.props.user, users:this.props.users} ),
-                Settings( {createDebt:this.createDebt, selectedGroup:selectedGroup} )
+                RightPanel( {createDebt:this.createDebt, selectedGroup:selectedGroup} )
             );
   }
 });
@@ -301,7 +301,7 @@ DebtView = React.createClass({displayName: 'DebtView',
   }
 });
 
-Settings = React.createClass({displayName: 'Settings',
+RightPanel = React.createClass({displayName: 'RightPanel',
   createDebt: function() {
     var amount, debt, description, getValue, type, user;
     getValue = (function(_this) {
@@ -329,7 +329,7 @@ Settings = React.createClass({displayName: 'Settings',
                     "New Debt",
                     React.DOM.i( {className:"fa fa-minus"})
                 ),
-                React.DOM.form( {onSubmit:this.createDebt}, 
+                React.DOM.form( {onSubmit:this.createDebt, className:"createDebt"}, 
                     React.DOM.div(null, 
                         React.DOM.select( {ref:"type"}, 
                             React.DOM.option( {value:"charge"}, "Charge"),
@@ -337,17 +337,17 @@ Settings = React.createClass({displayName: 'Settings',
                         ),
                         React.DOM.i( {className:"fa fa-caret-down"}),
 
-                        React.DOM.select( {ref:"who"}, 
+                        React.DOM.select( {ref:"who", className:"who"}, 
                             React.DOM.option( {value:"1"}, "Barnaby Jackson"),
                             React.DOM.option( {value:"2"}, "Lee Woodbridge")
                         ),
                         React.DOM.i( {className:"fa fa-caret-down"}),
 
-                        React.DOM.input( {ref:"amount", name:"amount", type:"text", placeholder:"Amount"} )
+                        React.DOM.input( {ref:"amount", name:"amount", type:"text", placeholder:"Amount", className:"amount"} )
                     ),
 
                     React.DOM.div(null, 
-                        React.DOM.input( {ref:"description", name:"description", type:"text", placeholder:"Description",  className:"form-control"})
+                        React.DOM.input( {ref:"description", name:"description", type:"text", placeholder:"Description",  className:"description"} )
                     ),
 
                     React.DOM.div( {className:"create-button"}, 
@@ -493,3 +493,5 @@ $(function() {
     return ref.parentNode.insertBefore(js, ref);
   })(document);
 });
+
+facebookLoginCallback();

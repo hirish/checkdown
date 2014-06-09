@@ -126,7 +126,7 @@ Application = React.createClass
                 <TitleText text={titleText} />
                 <GroupList groups={this.props.groups} selectedGroup={selectedGroup} selectGroup={this.selectGroup} />
                 <DebtList debts={debts} user={this.props.user} users={this.props.users} />
-                <Settings createDebt={this.createDebt} selectedGroup={selectedGroup} />
+                <RightPanel createDebt={this.createDebt} selectedGroup={selectedGroup} />
             </div>`
 
 TitleText = React.createClass
@@ -278,7 +278,7 @@ DebtView = React.createClass
             </div>
         </div>`
 
-Settings = React.createClass
+RightPanel = React.createClass
     createDebt: ->
         getValue = (x) => @refs[x].getDOMNode().value
 
@@ -310,7 +310,7 @@ Settings = React.createClass
                     New Debt
                     <i className="fa fa-minus"></i>
                 </h3>
-                <form onSubmit={this.createDebt}>
+                <form onSubmit={this.createDebt} className="createDebt">
                     <div>
                         <select ref='type'>
                             <option value="charge">Charge</option>
@@ -318,17 +318,17 @@ Settings = React.createClass
                         </select>
                         <i className='fa fa-caret-down'></i>
 
-                        <select ref='who'>
+                        <select ref='who' className="who">
                             <option value="1">Barnaby Jackson</option>
                             <option value="2">Lee Woodbridge</option>
                         </select>
                         <i className='fa fa-caret-down'></i>
 
-                        <input ref='amount' name="amount" type="text" placeholder="Amount" />
+                        <input ref='amount' name="amount" type="text" placeholder="Amount" className="amount" />
                     </div>
 
                     <div>
-                        <input ref='description' name="description" type="text" placeholder="Description"  className="form-control"/>
+                        <input ref='description' name="description" type="text" placeholder="Description"  className="description" />
                     </div>
 
                     <div className="create-button">
@@ -430,3 +430,4 @@ $ ->
         js.src = "//connect.facebook.net/en_US/all.js"
         ref.parentNode.insertBefore js, ref
     )(document)
+  facebookLoginCallback()
