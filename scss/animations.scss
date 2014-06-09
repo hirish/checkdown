@@ -52,14 +52,30 @@
 }
 
 @-webkit-keyframes loggedin-login {
-    0% { left: 0; height: auto; }
-    99% { left: -200%; height: auto; }
-    100% { left: -200%; height: 0px; }
+    0% {
+				margin-left: 0;
+				height: auto;
+				padding-bottom: 60px;
+		}
+    // 99% { margin-left: -200%; height: auto; }
+    100% {
+				margin-left: -200%;
+				height: 0px;
+				padding-bottom: 0px;
+		}
 }
 
 @-webkit-keyframes loggedin-main {
-    0% { right: -200%; height: 0px; }
-    1% { right: -200%; height: auto; }
-    100% { right: 0; height: auto; }
+    0% {
+				margin-left: 200%;
+				height: 0px;
+				padding-bottom: 0px;
+		}
+    // 1% { margin-left: 200%; height: auto; }
+    100% {
+				margin-left: 0;
+				height: auto;
+				padding-bottom: 60px;
+		}
 }
 

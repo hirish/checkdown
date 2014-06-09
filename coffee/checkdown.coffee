@@ -124,9 +124,11 @@ Application = React.createClass
 
         return `<div>
                 <TitleText text={titleText} />
-                <GroupList groups={this.props.groups} selectedGroup={selectedGroup} selectGroup={this.selectGroup} />
-                <DebtList debts={debts} user={this.props.user} users={this.props.users} />
-                <RightPanel createDebt={this.createDebt} selectedGroup={selectedGroup} />
+                <div className="container">
+                  <GroupList groups={this.props.groups} selectedGroup={selectedGroup} selectGroup={this.selectGroup} />
+                  <DebtList debts={debts} user={this.props.user} users={this.props.users} />
+                  <RightPanel createDebt={this.createDebt} selectedGroup={selectedGroup} />
+                </div>
             </div>`
 
 TitleText = React.createClass
@@ -151,7 +153,7 @@ GroupList = React.createClass
                 </li>`
 
 
-        return `<div id="overview" className="column narrow">
+        return `<div className="groupList"><div id="overview">
             <ul>
                 <h2>Combined</h2>
                 <li>
@@ -168,7 +170,7 @@ GroupList = React.createClass
                     <i className='fa fa-plus'></i>
                 </li>
             </ul>
-        </div>`
+        </div></div>`
 
 DebtList = React.createClass
     render: ->
@@ -192,7 +194,7 @@ DebtList = React.createClass
             else
                 `<h2>There are no debts</h2>`
 
-        return `<div id="details" className="column wide">{debts}</div>`
+        return `<div className="debtList"><div id="details">{debts}</div></div>`
 
 DebtView = React.createClass
     getInitialState: ->
@@ -304,7 +306,7 @@ RightPanel = React.createClass
         return false
 
     render: ->
-        return `<div id="user" className="column">
+        return `<div className="aside"><div id="user">
             <div id="new-debt" className="card">
                 <h3>
                     New Debt
@@ -342,7 +344,7 @@ RightPanel = React.createClass
                     <i className="fa fa-plus"></i>
                 </h3>
             </div>
-        </div>`
+        </div></div>`
 
 Price = React.createClass
   render: ->
@@ -430,4 +432,7 @@ $ ->
         js.src = "//connect.facebook.net/en_US/all.js"
         ref.parentNode.insertBefore js, ref
     )(document)
-  facebookLoginCallback()
+
+  window.f = ->
+    facebookLoginCallback()
+  f()

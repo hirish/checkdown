@@ -12,28 +12,24 @@
 @-webkit-keyframes nemo-move {}
 @-webkit-keyframes loggedin-login {
   0% {
-    left: 0;
-    height: auto; }
-
-  99% {
-    left: -200%;
-    height: auto; }
+    margin-left: 0;
+    height: auto;
+    padding-bottom: 60px; }
 
   100% {
-    left: -200%;
-    height: 0px; } }
+    margin-left: -200%;
+    height: 0px;
+    padding-bottom: 0px; } }
 @-webkit-keyframes loggedin-main {
   0% {
-    right: -200%;
-    height: 0px; }
-
-  1% {
-    right: -200%;
-    height: auto; }
+    margin-left: 200%;
+    height: 0px;
+    padding-bottom: 0px; }
 
   100% {
-    right: 0;
-    height: auto; } }
+    margin-left: 0;
+    height: auto;
+    padding-bottom: 60px; } }
 button {
   background-color: #004444;
   border: none;
@@ -151,28 +147,24 @@ body {
 @-webkit-keyframes nemo-move {}
 @-webkit-keyframes loggedin-login {
   0% {
-    left: 0;
-    height: auto; }
-
-  99% {
-    left: -200%;
-    height: auto; }
+    margin-left: 0;
+    height: auto;
+    padding-bottom: 60px; }
 
   100% {
-    left: -200%;
-    height: 0px; } }
+    margin-left: -200%;
+    height: 0px;
+    padding-bottom: 0px; } }
 @-webkit-keyframes loggedin-main {
   0% {
-    right: -200%;
-    height: 0px; }
-
-  1% {
-    right: -200%;
-    height: auto; }
+    margin-left: 200%;
+    height: 0px;
+    padding-bottom: 0px; }
 
   100% {
-    right: 0;
-    height: auto; } }
+    margin-left: 0;
+    height: auto;
+    padding-bottom: 60px; } }
 #swell {
   fill: #004444; }
 
@@ -263,28 +255,24 @@ body {
 @-webkit-keyframes nemo-move {}
 @-webkit-keyframes loggedin-login {
   0% {
-    left: 0;
-    height: auto; }
-
-  99% {
-    left: -200%;
-    height: auto; }
+    margin-left: 0;
+    height: auto;
+    padding-bottom: 60px; }
 
   100% {
-    left: -200%;
-    height: 0px; } }
+    margin-left: -200%;
+    height: 0px;
+    padding-bottom: 0px; } }
 @-webkit-keyframes loggedin-main {
   0% {
-    right: -200%;
-    height: 0px; }
-
-  1% {
-    right: -200%;
-    height: auto; }
+    margin-left: 200%;
+    height: 0px;
+    padding-bottom: 0px; }
 
   100% {
-    right: 0;
-    height: auto; } }
+    margin-left: 0;
+    height: auto;
+    padding-bottom: 60px; } }
 input[type=text], input[type=password], select {
   height: 30px;
   border: 1px solid #999;
@@ -316,7 +304,7 @@ select {
 .createDebt .who {
   width: 120px; }
 .createDebt .amount {
-  width: 67px; }
+  width: 65px; }
 .createDebt .description {
   width: 100%; }
 
@@ -386,25 +374,58 @@ table {
 #logo {
   margin: 50px 0; }
 
-#main, #login {
-  *zoom: 1;
-  max-width: 68em;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1000px;
+body {
+  position: relative; }
+
+.container {
+  display: flex;
+  width: 80%;
+  margin: 0 auto; }
+  .container .debtList, .container .groupList, .container .aside {
+    margin-bottom: 40px; }
+  .container .debtList {
+    flex: 5;
+    margin: 0 30px; }
+  .container .groupList {
+    flex: 3; }
+  .container .aside {
+    flex: 4; }
+
+#footer {
+  width: 100%;
+  padding: 15px;
   position: absolute;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
+  bottom: 0px;
+  text-align: center;
+  font-family: "Sanchez";
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 10px;
+  color: #8a6400;
+  box-shadow: 0px -30px 100px #003333;
+  background-color: #ffdf8a; }
+
+#main, #login {
+  padding-bottom: 80px; }
+
+.debtList, .groupList, .aside {
+  position: relative;
+  transition: 0.5s;
+  opacity: 0.95; }
+  .debtList h2, .groupList h2, .aside h2 {
+    padding: 10px 15px; }
+
+#overview, #user, #details {
+  border-radius: 7px;
+  padding: 1px; }
+
+#main, #login {
+  width: 100%;
+  margin: 0;
   overflow: hidden;
   max-height: 100000px;
   z-index: 100;
   transition: 1s; }
-  #main:before, #main:after, #login:before, #login:after {
-    content: " ";
-    display: table; }
-  #main:after, #login:after {
-    clear: both; }
   #main .column, #login .column {
     float: left;
     display: block;
@@ -563,20 +584,6 @@ table {
 
 #login.off {
   top: -1000px; }
-
-#footer {
-  position: absolute;
-  bottom: 0px;
-  width: 100%;
-  background-color: #ffdf8a;
-  padding: 15px;
-  color: #8a6400;
-  text-align: center;
-  font-family: "Sanchez";
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 10px;
-  box-shadow: 0px -30px 100px #003333; }
 
 .seaweed {
   position: absolute;

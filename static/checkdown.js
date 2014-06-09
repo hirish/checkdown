@@ -147,9 +147,11 @@ Application = React.createClass({displayName: 'Application',
     titleText = "Welcome to GoDut.ch, " + (this.props.user.get('username'));
     return React.DOM.div(null, 
                 TitleText( {text:titleText} ),
-                GroupList( {groups:this.props.groups, selectedGroup:selectedGroup, selectGroup:this.selectGroup} ),
-                DebtList( {debts:debts, user:this.props.user, users:this.props.users} ),
-                RightPanel( {createDebt:this.createDebt, selectedGroup:selectedGroup} )
+                React.DOM.div( {className:"container"}, 
+                  GroupList( {groups:this.props.groups, selectedGroup:selectedGroup, selectGroup:this.selectGroup} ),
+                  DebtList( {debts:debts, user:this.props.user, users:this.props.users} ),
+                  RightPanel( {createDebt:this.createDebt, selectedGroup:selectedGroup} )
+                )
             );
   }
 });
@@ -180,7 +182,7 @@ GroupList = React.createClass({displayName: 'GroupList',
                 );
       };
     })(this));
-    return React.DOM.div( {id:"overview", className:"column narrow"}, 
+    return React.DOM.div( {className:"groupList"}, React.DOM.div( {id:"overview"}, 
             React.DOM.ul(null, 
                 React.DOM.h2(null, "Combined"),
                 React.DOM.li(null, 
@@ -197,7 +199,7 @@ GroupList = React.createClass({displayName: 'GroupList',
                     React.DOM.i( {className:"fa fa-plus"})
                 )
             )
-        );
+        ));
   }
 });
 
@@ -220,7 +222,7 @@ DebtList = React.createClass({displayName: 'DebtList',
         return DebtView( {key:key, user:user, otherUser:otherUser, debts:debts, open:open} );
       };
     })(this))) : React.DOM.h2(null, "There are no debts");
-    return React.DOM.div( {id:"details", className:"column wide"}, debts);
+    return React.DOM.div( {className:"debtList"}, React.DOM.div( {id:"details"}, debts));
   }
 });
 
@@ -323,7 +325,7 @@ RightPanel = React.createClass({displayName: 'RightPanel',
     return false;
   },
   render: function() {
-    return React.DOM.div( {id:"user", className:"column"}, 
+    return React.DOM.div( {className:"aside"}, React.DOM.div( {id:"user"}, 
             React.DOM.div( {id:"new-debt", className:"card"}, 
                 React.DOM.h3(null, 
                     "New Debt",
@@ -361,7 +363,7 @@ RightPanel = React.createClass({displayName: 'RightPanel',
                     React.DOM.i( {className:"fa fa-plus"})
                 )
             )
-        );
+        ));
   }
 });
 
@@ -494,4 +496,8 @@ $(function() {
   })(document);
 });
 
-facebookLoginCallback();
+window.f = function() {
+  return facebookLoginCallback();
+};
+
+f();

@@ -8,6 +8,8 @@
 @import "sky";
 @import "forms";
 
+
+// Login/Main page switching.
 body {
     background-color: $site_bg;
     padding: 0px;
@@ -92,12 +94,75 @@ table {
 
 #logo { margin: 50px 0; }
 
+// Layout
+
+body {
+		position: relative;
+}
+
+.container {
+		display: flex;
+		width: 80%;
+		margin: 0 auto;
+
+		.debtList, .groupList, .aside {
+				margin-bottom: 40px;	
+		}
+
+		.debtList {
+				flex: 5;
+				margin: 0 30px;
+		}
+
+		.groupList {
+				flex: 3;
+		}
+
+		.aside {
+				flex: 4;
+		}
+
+}
+
+#footer {
+    width: 100%;
+    padding: 15px;
+		position: absolute;
+		bottom: 0px;
+
+    text-align: center;
+    font-family: $header_font;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 10px;
+
+    color: darken($beach-color, 50%);
+    box-shadow: 0px -30px 100px #003333;
+    background-color: $beach-color;
+}
+
 #main, #login {
-    @include outer-container;
-    max-width: 1000px;
-    position: absolute;
-    left: 0; right: 0;
-    margin: 0 auto;
+		padding-bottom: 80px;
+}
+
+.debtList, .groupList, .aside {
+		position: relative;
+		transition: 0.5s;
+		opacity: 0.95;
+
+		h2 {
+				padding: 10px 15px;
+		}
+}
+
+#overview, #user, #details {
+		border-radius: 7px;
+		padding: 1px;
+}
+
+#main, #login {
+		width: 100%;
+    margin: 0;
     overflow: hidden;
     max-height: 100000px;
 
@@ -250,21 +315,6 @@ table {
 
 #login.off {
   top: -1000px;
-}
-
-#footer {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    background-color: $beach-color;
-    padding: 15px;
-    color: darken($beach-color, 50%);
-    text-align: center;
-    font-family: $header_font;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 10px;
-    box-shadow: 0px -30px 100px #003333;
 }
 
 .seaweed {
