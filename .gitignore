@@ -42,3 +42,4 @@ bower_components
 node_modules
 test.db
 
+.sass-cache
