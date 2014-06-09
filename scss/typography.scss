@@ -52,3 +52,10 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+
+#footer {
+    font-family: $header_font;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 10px;
+}

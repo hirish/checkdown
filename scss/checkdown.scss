@@ -100,26 +100,52 @@ body {
 		position: relative;
 }
 
+@mixin display-flex() {
+		display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+		display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+		display: -ms-flexbox;      /* TWEENER - IE 10 */
+		display: -webkit-flex;     /* NEW - Chrome */
+		display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+@mixin flex($amount) {
+		-webkit-box-flex: $amount;      /* OLD - iOS 6-, Safari 3.1-6 */
+		-moz-box-flex: $amount;         /* OLD - Firefox 19- */
+		-webkit-flex: $amount;          /* Chrome */
+		-ms-flex: $amount;              /* IE 10 */
+		flex: $amount;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+@mixin order($position) {
+		-webkit-box-ordinal-group: $position;   /* OLD - iOS 6-, Safari 3.1-6 */
+		-moz-box-ordinal-group: $position;      /* OLD - Firefox 19- */
+		-ms-flex-order: $position;              /* TWEENER - IE 10 */
+		-webkit-order: $position;               /* NEW - Chrome */
+		order: $position;                       /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
 .container {
-		display: flex;
+		@include display-flex();
+
 		width: 80%;
 		margin: 0 auto;
-
 		.debtList, .groupList, .aside {
-				margin-bottom: 40px;	
+				margin: 0 10px 40px;
 		}
 
 		.debtList {
-				flex: 5;
-				margin: 0 30px;
+				@include flex(5);
+				@include order(2);
 		}
 
 		.groupList {
-				flex: 3;
+				@include flex(3);
+				@include order(1);
 		}
 
 		.aside {
-				flex: 4;
+				@include flex(4);
+				@include order(3);
 		}
 
 }
@@ -131,18 +157,9 @@ body {
 		bottom: 0px;
 
     text-align: center;
-    font-family: $header_font;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 10px;
-
     color: darken($beach-color, 50%);
     box-shadow: 0px -30px 100px #003333;
     background-color: $beach-color;
-}
-
-#main, #login {
-		padding-bottom: 80px;
 }
 
 .debtList, .groupList, .aside {
@@ -165,6 +182,7 @@ body {
     margin: 0;
     overflow: hidden;
     max-height: 100000px;
+		padding-bottom: 80px;
 
     z-index: 100;
     transition: 1s;
@@ -199,7 +217,7 @@ body {
     h3 {
         text-align: left;
     }
-    
+
     .card {
         text-align: center;
         padding: 20px 0;
@@ -254,7 +272,7 @@ body {
     h2 {
         color: white;
     }
-    
+
     > ul {
         list-style: none;
         padding: 0px;
@@ -311,10 +329,6 @@ body {
       h1, h2 {
         padding-bottom: 10px;
       }
-}
-
-#login.off {
-  top: -1000px;
 }
 
 .seaweed {
