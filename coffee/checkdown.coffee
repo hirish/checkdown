@@ -224,20 +224,20 @@ DebtView = React.createClass
         if total is 0
             return ``
 
-        absTotal = Math.abs(total)
-        cents = absTotal % 100
-        cents = if cents is 0 then '00' else if cents < 10 then '0'+cents else cents
-        dollars = (absTotal - cents) / 100
-        amount = " $#{dollars}.#{cents}"
+        # absTotal = Math.abs(total)
+        # cents = absTotal % 100
+        # cents = if cents is 0 then '00' else if cents < 10 then '0'+cents else cents
+        # dollars = (absTotal - cents) / 100
+        # amount = " $#{dollars}.#{cents}"
 
         titleText =
             if total > 0
                 `<span>
-                    <em>{this.props.otherUser.get('username')}</em> owes <strong>You</strong>{amount}
+                    <em>{this.props.otherUser.get('username')}</em> owes <strong>You</strong> <Price amount={Math.abs(total)} currency="USD" />
                 </span>`
             else
                 `<span>
-                    <strong>You</strong> owe <em>{this.props.otherUser.get('username')}</em>{amount}
+                    <strong>You</strong> owe <em>{this.props.otherUser.get('username')}</em> <Price amount={Math.abs(total)} currency="USD" />
                 </span>`
 
         cardClass  = if @state.open then "card" else "closed card"
@@ -253,7 +253,7 @@ DebtView = React.createClass
 
                 `<tr>
                     <td>10/01/2014</td>
-                    <td>{sign} {debt.get('amount')}</td>
+                    <td>{sign} <Price amount={debt.get('amount')} currency="USD" /></td>
                     <td>{debt.get('description')}</td>
                     <td><i className="fa fa-times"></i></td>
                 </tr>`
@@ -273,7 +273,7 @@ DebtView = React.createClass
                 {debtRows}
             </table>
             <div className="payment">
-                <button className="green"><i className="fa fa-check"></i>Pay All {amount}</button>
+                <button className="green"><i className="fa fa-check"></i>Pay All <Price amount={Math.abs(total)} currency="USD" /></button>
                 <button>Pay Other</button>
             </div>
         </div>`
@@ -343,6 +343,33 @@ Settings = React.createClass
                 </h3>
             </div>
         </div>`
+
+Price = React.createClass
+  render: ->
+    switch @props.currency
+      when 'USD'
+        code = 'USD'
+        symbol = String.fromCharCode 36
+      when 'EUR'
+        code = 'EUR'
+        symbol = String.fromCharCode 8364
+      when 'GBP'
+        code = 'GBP'
+        symbol = String.fromCharCode 163
+      else
+        code = 'USD'
+        symbol = String.fromCharCode 36
+
+		# Amount is passed in cents
+    console.log @props.amount
+    amount = Number(@props.amount/100).toFixed(2)
+
+    code = ' ' + code
+
+    if @props.hideCurrency? then code = ''
+
+    `<span>{symbol}{amount}{code}</span>`
+
 
 
 facebookLoginCallback = (response) ->

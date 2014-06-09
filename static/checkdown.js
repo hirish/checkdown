@@ -1,5 +1,5 @@
 /** @jsx React.DOM */;
-var Application, Debt, DebtList, DebtView, Debts, Group, GroupList, Groups, Settings, TitleText, User, Users, facebookLoginCallback;
+var Application, Debt, DebtList, DebtView, Debts, Group, GroupList, Groups, Price, Settings, TitleText, User, Users, facebookLoginCallback;
 
 User = Backbone.Model.extend({
   toString: function() {
@@ -253,22 +253,17 @@ DebtView = React.createClass({displayName: 'DebtView',
     });
   },
   render: function() {
-    var absTotal, amount, cardClass, cents, credits, debits, debtRows, dollars, titleText, toggleIconClass, total;
+    var cardClass, credits, debits, debtRows, titleText, toggleIconClass, total;
     debits = this.props.debts.debtorIs(this.props.user);
     credits = this.props.debts.lenderIs(this.props.user);
     total = credits.totalAmount() - debits.totalAmount();
     if (total === 0) {
       return ;
     }
-    absTotal = Math.abs(total);
-    cents = absTotal % 100;
-    cents = cents === 0 ? '00' : cents < 10 ? '0' + cents : cents;
-    dollars = (absTotal - cents) / 100;
-    amount = " $" + dollars + "." + cents;
     titleText = total > 0 ? React.DOM.span(null, 
-                    React.DOM.em(null, this.props.otherUser.get('username')), " owes ", React.DOM.strong(null, "You"),amount
+                    React.DOM.em(null, this.props.otherUser.get('username')), " owes ", React.DOM.strong(null, "You"), " ", Price( {amount:Math.abs(total), currency:"USD"} )
                 ) : React.DOM.span(null, 
-                    React.DOM.strong(null, "You"), " owe ", React.DOM.em(null, this.props.otherUser.get('username')),amount
+                    React.DOM.strong(null, "You"), " owe ", React.DOM.em(null, this.props.otherUser.get('username')), " ", Price( {amount:Math.abs(total), currency:"USD"} )
                 );
     cardClass = this.state.open ? "card" : "closed card";
     toggleIconClass = this.state.open ? "fa fa-minus" : "fa fa-plus";
@@ -278,7 +273,7 @@ DebtView = React.createClass({displayName: 'DebtView',
         sign = debt.get('debtor_id') === _this.props.user.id ? '– ' : '+ ';
         return React.DOM.tr(null, 
                     React.DOM.td(null, "10/01/2014"),
-                    React.DOM.td(null, sign, " ", debt.get('amount')),
+                    React.DOM.td(null, sign, " ", Price( {amount:debt.get('amount'), currency:"USD"} )),
                     React.DOM.td(null, debt.get('description')),
                     React.DOM.td(null, React.DOM.i( {className:"fa fa-times"}))
                 );
@@ -299,7 +294,7 @@ DebtView = React.createClass({displayName: 'DebtView',
                 debtRows
             ),
             React.DOM.div( {className:"payment"}, 
-                React.DOM.button( {className:"green"}, React.DOM.i( {className:"fa fa-check"}),"Pay All ", amount),
+                React.DOM.button( {className:"green"}, React.DOM.i( {className:"fa fa-check"}),"Pay All ", Price( {amount:Math.abs(total), currency:"USD"} )),
                 React.DOM.button(null, "Pay Other")
             )
         );
@@ -367,6 +362,36 @@ Settings = React.createClass({displayName: 'Settings',
                 )
             )
         );
+  }
+});
+
+Price = React.createClass({displayName: 'Price',
+  render: function() {
+    var amount, code, symbol;
+    switch (this.props.currency) {
+      case 'USD':
+        code = 'USD';
+        symbol = String.fromCharCode(36);
+        break;
+      case 'EUR':
+        code = 'EUR';
+        symbol = String.fromCharCode(8364);
+        break;
+      case 'GBP':
+        code = 'GBP';
+        symbol = String.fromCharCode(163);
+        break;
+      default:
+        code = 'USD';
+        symbol = String.fromCharCode(36);
+    }
+    console.log(this.props.amount);
+    amount = Number(this.props.amount / 100).toFixed(2);
+    code = ' ' + code;
+    if (this.props.hideCurrency != null) {
+      code = '';
+    }
+    return React.DOM.span(null, symbol,amount,code);
   }
 });
 
