@@ -226,12 +226,6 @@ DebtView = React.createClass
         if total is 0
             return ``
 
-        # absTotal = Math.abs(total)
-        # cents = absTotal % 100
-        # cents = if cents is 0 then '00' else if cents < 10 then '0'+cents else cents
-        # dollars = (absTotal - cents) / 100
-        # amount = " $#{dollars}.#{cents}"
-
         titleText =
             if total > 0
                 `<span>
@@ -363,7 +357,6 @@ Price = React.createClass
         symbol = String.fromCharCode 36
 
 		# Amount is passed in cents
-    console.log @props.amount
     amount = Number(@props.amount/100).toFixed(2)
 
     code = ' ' + code
@@ -400,7 +393,7 @@ facebookLoginCallback = (response) ->
                 groups.add(new Group response.group)
 
 
-        React.renderComponent Application(user: user, users: users, groups: groups, debts: debts), $('#main')[0], ->
+        window.app = React.renderComponent Application(user: user, users: users, groups: groups, debts: debts), $('#main')[0], ->
             setTimeout (->$('body').addClass 'logged-in'), 50
 
 

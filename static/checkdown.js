@@ -387,7 +387,6 @@ Price = React.createClass({displayName: 'Price',
         code = 'USD';
         symbol = String.fromCharCode(36);
     }
-    console.log(this.props.amount);
     amount = Number(this.props.amount / 100).toFixed(2);
     code = ' ' + code;
     if (this.props.hideCurrency != null) {
@@ -441,7 +440,7 @@ facebookLoginCallback = function(response) {
         };
       })(this));
     }
-    return React.renderComponent(Application({
+    return window.app = React.renderComponent(Application({
       user: user,
       users: users,
       groups: groups,
