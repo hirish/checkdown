@@ -167,6 +167,9 @@ h3 {
   100% {
     right: 0;
     height: auto; } }
+#swell {
+  fill: #004444; }
+
 #sky {
   background-color: #7bdbeb;
   width: 100%;
@@ -327,22 +330,6 @@ select {
   border-radius: 5px;
   overflow: hidden;
   transition: 1s; }
-  .card h3 {
-    font-size: 100%;
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: 5px 0;
-    cursor: pointer;
-    margin: 15px 0; }
-    .card h3 em {
-      font-style: normal;
-      color: #009999; }
-    .card h3 strong {
-      color: #bb5533; }
-    .card h3 i {
-      float: right;
-      font-size: 12px;
-      margin-right: 5px; }
   .card img {
     float: left;
     margin-top: 12px;

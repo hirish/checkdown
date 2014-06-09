@@ -7,27 +7,6 @@
 @import "typography";
 @import "sky";
 
-$color1: #b53;
-$color2: #b53;
-$color3: #374140;
-$color4: #ffb03b;
-$color5: #099;
-$color6: white;
-$color7: #044;
-
-$sky-color: rgb(123,219,235);
-$beach-color: rgb(255,223,138);
-
-$site_bg: $color7;
-$header_bg: transparent;
-
-$left_col_bg:   $color1;
-$center_col_bg: $color2;
-$right_col_bg:  $color5;
-
-$header_font: "Sanchez";
-$body_font: "Open Sans";
-
 #swell {
     fill: $site_bg;
 }
@@ -123,30 +102,6 @@ select {
     border-radius: 5px;
     overflow:hidden;
     transition: 1s;
-
-    h3 {
-        font-size: 100%;
-        font-weight: bold;
-        text-transform:uppercase;
-        padding: 5px 0;
-        cursor: pointer;
-        margin: 15px 0;
-
-        em {
-            font-style: normal;
-            color: $color5;
-        }
-        strong {
-            color: $color2;
-            // border-bottom: 1px solid $color2;
-        }
-
-        i {
-            float: right;
-            font-size: 12px;
-            margin-right: 5px;
-        }
-    }
 
     img {
         float: left;
