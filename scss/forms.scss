@@ -1,3 +1,4 @@
+@import "../bower_components/bourbon/dist/bourbon";
 @import "config";
 @import "animations";
 
@@ -26,13 +27,25 @@ select {
 }
 
 .fa-caret-down {
+    margin-top: 9px;
     margin-left: -16px;
     margin-right: 13px;
     cursor: pointer;
+    z-index: 1;
 }
 
 .createDebt {
     .who { width: 120px; }
     .amount { width: 65px; }
     .description { width: 100%; }
+
+    > div {
+      @include display(flex);
+    }
+
+    select, input {
+      @include flex(1);
+      z-index: 2;
+      background-color: transparent;
+    }
 }

@@ -2,7 +2,7 @@
 @import "animations";
 
 @mixin cloud($top, $z-index, $delay) {
-    @include animation(clouds 360s linear infinite);
+    @include animation(clouds 720s linear infinite);
 		@include animation-delay($delay);
 
 		top: $top;

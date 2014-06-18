@@ -4,12 +4,39 @@
   box-sizing: border-box; }
 
 @-webkit-keyframes inputError {}
-@-webkit-keyframes clouds {}
-@-webkit-keyframes back-clouds {}
-@-webkit-keyframes ship {}
-@-webkit-keyframes login {}
-@-webkit-keyframes nemo {}
-@-webkit-keyframes nemo-move {}
+@-webkit-keyframes clouds {
+  0%, 100% {
+    -webkit-transform: translateX(-50px); }
+
+  50% {
+    -webkit-transform: translateX(2000px); } }
+@-webkit-keyframes ship {
+  0%, 100% {
+    -webkit-transform: rotate(-1deg); }
+
+  50% {
+    -webkit-transform: rotate(4deg); } }
+@-webkit-keyframes login {
+  0%, 40%, 44%, 100% {
+    -webkit-transform: rotate(0deg); }
+
+  41% {
+    -webkit-transform: rotate(-3deg); }
+
+  43% {
+    -webkit-transform: rotate(3deg); } }
+@-webkit-keyframes nemo {
+  0%, 100% {
+    -webkit-transform: rotate(-6deg); }
+
+  50% {
+    -webkit-transform: rotate(-2deg); } }
+@-webkit-keyframes nemo-move {
+  from {
+    left: -5%; }
+
+  to {
+    left: 105%; } }
 @-webkit-keyframes loggedin-login {
   0% {
     margin-left: 0;
@@ -145,12 +172,39 @@ body {
   font-size: 10px; }
 
 @-webkit-keyframes inputError {}
-@-webkit-keyframes clouds {}
-@-webkit-keyframes back-clouds {}
-@-webkit-keyframes ship {}
-@-webkit-keyframes login {}
-@-webkit-keyframes nemo {}
-@-webkit-keyframes nemo-move {}
+@-webkit-keyframes clouds {
+  0%, 100% {
+    -webkit-transform: translateX(-50px); }
+
+  50% {
+    -webkit-transform: translateX(2000px); } }
+@-webkit-keyframes ship {
+  0%, 100% {
+    -webkit-transform: rotate(-1deg); }
+
+  50% {
+    -webkit-transform: rotate(4deg); } }
+@-webkit-keyframes login {
+  0%, 40%, 44%, 100% {
+    -webkit-transform: rotate(0deg); }
+
+  41% {
+    -webkit-transform: rotate(-3deg); }
+
+  43% {
+    -webkit-transform: rotate(3deg); } }
+@-webkit-keyframes nemo {
+  0%, 100% {
+    -webkit-transform: rotate(-6deg); }
+
+  50% {
+    -webkit-transform: rotate(-2deg); } }
+@-webkit-keyframes nemo-move {
+  from {
+    left: -5%; }
+
+  to {
+    left: 105%; } }
 @-webkit-keyframes loggedin-login {
   0% {
     margin-left: 0;
@@ -196,9 +250,9 @@ body {
     height: 10px;
     z-index: 25; }
   #sky .cloud1 {
-    -webkit-animation: clouds 360s linear infinite;
-    -moz-animation: clouds 360s linear infinite;
-    animation: clouds 360s linear infinite;
+    -webkit-animation: clouds 720s linear infinite;
+    -moz-animation: clouds 720s linear infinite;
+    animation: clouds 720s linear infinite;
     -webkit-animation-delay: -250s;
     -moz-animation-delay: -250s;
     animation-delay: -250s;
@@ -208,9 +262,9 @@ body {
     box-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1);
     opacity: 0.9; }
   #sky .cloud2 {
-    -webkit-animation: clouds 360s linear infinite;
-    -moz-animation: clouds 360s linear infinite;
-    animation: clouds 360s linear infinite;
+    -webkit-animation: clouds 720s linear infinite;
+    -moz-animation: clouds 720s linear infinite;
+    animation: clouds 720s linear infinite;
     -webkit-animation-delay: -20s;
     -moz-animation-delay: -20s;
     animation-delay: -20s;
@@ -220,9 +274,9 @@ body {
     box-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1);
     opacity: 0.9; }
   #sky .cloud3 {
-    -webkit-animation: clouds 360s linear infinite;
-    -moz-animation: clouds 360s linear infinite;
-    animation: clouds 360s linear infinite;
+    -webkit-animation: clouds 720s linear infinite;
+    -moz-animation: clouds 720s linear infinite;
+    animation: clouds 720s linear infinite;
     -webkit-animation-delay: -120s;
     -moz-animation-delay: -120s;
     animation-delay: -120s;
@@ -232,9 +286,9 @@ body {
     box-shadow: 0px 1px 0 rgba(0, 0, 0, 0.1);
     opacity: 0.9; }
   #sky .cloud4 {
-    -webkit-animation: clouds 360s linear infinite;
-    -moz-animation: clouds 360s linear infinite;
-    animation: clouds 360s linear infinite;
+    -webkit-animation: clouds 720s linear infinite;
+    -moz-animation: clouds 720s linear infinite;
+    animation: clouds 720s linear infinite;
     -webkit-animation-delay: -300s;
     -moz-animation-delay: -300s;
     animation-delay: -300s;
@@ -253,12 +307,39 @@ body {
     left: 50%; }
 
 @-webkit-keyframes inputError {}
-@-webkit-keyframes clouds {}
-@-webkit-keyframes back-clouds {}
-@-webkit-keyframes ship {}
-@-webkit-keyframes login {}
-@-webkit-keyframes nemo {}
-@-webkit-keyframes nemo-move {}
+@-webkit-keyframes clouds {
+  0%, 100% {
+    -webkit-transform: translateX(-50px); }
+
+  50% {
+    -webkit-transform: translateX(2000px); } }
+@-webkit-keyframes ship {
+  0%, 100% {
+    -webkit-transform: rotate(-1deg); }
+
+  50% {
+    -webkit-transform: rotate(4deg); } }
+@-webkit-keyframes login {
+  0%, 40%, 44%, 100% {
+    -webkit-transform: rotate(0deg); }
+
+  41% {
+    -webkit-transform: rotate(-3deg); }
+
+  43% {
+    -webkit-transform: rotate(3deg); } }
+@-webkit-keyframes nemo {
+  0%, 100% {
+    -webkit-transform: rotate(-6deg); }
+
+  50% {
+    -webkit-transform: rotate(-2deg); } }
+@-webkit-keyframes nemo-move {
+  from {
+    left: -5%; }
+
+  to {
+    left: 105%; } }
 @-webkit-keyframes loggedin-login {
   0% {
     margin-left: 0;
@@ -303,9 +384,11 @@ select {
   padding-right: 22px; }
 
 .fa-caret-down {
+  margin-top: 9px;
   margin-left: -16px;
   margin-right: 13px;
-  cursor: pointer; }
+  cursor: pointer;
+  z-index: 1; }
 
 .createDebt .who {
   width: 120px; }
@@ -313,6 +396,24 @@ select {
   width: 65px; }
 .createDebt .description {
   width: 100%; }
+.createDebt > div {
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex; }
+.createDebt select, .createDebt input {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  box-flex: 1;
+  -webkit-flex: 1;
+  -moz-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  z-index: 2;
+  background-color: transparent; }
 
 body {
   background-color: #004444;
@@ -385,30 +486,24 @@ body {
 
 .container {
   display: -webkit-box;
-  /* OLD - iOS 6-, Safari 3.1-6 */
   display: -moz-box;
-  /* OLD - Firefox 19- (buggy but mostly works) */
-  display: -ms-flexbox;
-  /* TWEENER - IE 10 */
+  display: box;
   display: -webkit-flex;
-  /* NEW - Chrome */
+  display: -moz-flex;
+  display: -ms-flexbox;
   display: flex;
-  /* NEW, Spec - Opera 12.1, Firefox 20+ */
   width: 80%;
   margin: 0 auto; }
   .container .debtList, .container .groupList, .container .aside {
     margin: 0 10px 40px; }
   .container .debtList {
     -webkit-box-flex: 5;
-    /* OLD - iOS 6-, Safari 3.1-6 */
     -moz-box-flex: 5;
-    /* OLD - Firefox 19- */
+    box-flex: 5;
     -webkit-flex: 5;
-    /* Chrome */
+    -moz-flex: 5;
     -ms-flex: 5;
-    /* IE 10 */
     flex: 5;
-    /* NEW, Spec - Opera 12.1, Firefox 20+ */
     -webkit-box-ordinal-group: 2;
     /* OLD - iOS 6-, Safari 3.1-6 */
     -moz-box-ordinal-group: 2;
@@ -421,15 +516,12 @@ body {
     /* NEW, Spec - Opera 12.1, Firefox 20+ */ }
   .container .groupList {
     -webkit-box-flex: 3;
-    /* OLD - iOS 6-, Safari 3.1-6 */
     -moz-box-flex: 3;
-    /* OLD - Firefox 19- */
+    box-flex: 3;
     -webkit-flex: 3;
-    /* Chrome */
+    -moz-flex: 3;
     -ms-flex: 3;
-    /* IE 10 */
     flex: 3;
-    /* NEW, Spec - Opera 12.1, Firefox 20+ */
     -webkit-box-ordinal-group: 1;
     /* OLD - iOS 6-, Safari 3.1-6 */
     -moz-box-ordinal-group: 1;
@@ -442,15 +534,12 @@ body {
     /* NEW, Spec - Opera 12.1, Firefox 20+ */ }
   .container .aside {
     -webkit-box-flex: 4;
-    /* OLD - iOS 6-, Safari 3.1-6 */
     -moz-box-flex: 4;
-    /* OLD - Firefox 19- */
+    box-flex: 4;
     -webkit-flex: 4;
-    /* Chrome */
+    -moz-flex: 4;
     -ms-flex: 4;
-    /* IE 10 */
     flex: 4;
-    /* NEW, Spec - Opera 12.1, Firefox 20+ */
     -webkit-box-ordinal-group: 3;
     /* OLD - iOS 6-, Safari 3.1-6 */
     -moz-box-ordinal-group: 3;
@@ -537,50 +626,62 @@ body {
     text-align: center;
     padding: 20px 0; }
   #login-options button#facebook-login {
-    background-color: #3b5998;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 20px;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0 3px;
-    font-size: 11px;
+    border: 1px solid #21396b;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 0 0 #6882b8;
+    color: white;
+    display: inline-block;
+    font-size: inherit;
     font-weight: bold;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-transform: uppercase;
-    transition: 0.5s;
+    background-color: #3b5998;
+    background-image: -webkit-linear-gradient(#3b5998, #243f77);
+    background-image: linear-gradient(#3b5998, #243f77);
+    padding: 7px 18px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #182f5f;
+    background-clip: padding-box;
     -webkit-animation: login 10s ease-in-out infinite;
     -moz-animation: login 10s ease-in-out infinite;
     animation: login 10s ease-in-out infinite; }
-    #login-options button#facebook-login:hover {
-      background-color: #4c70ba;
-      color: white;
-      cursor: pointer; }
-    #login-options button#facebook-login:focus {
-      outline: none; }
-    #login-options button#facebook-login i {
-      padding-right: 5px; }
+    #login-options button#facebook-login:hover:not(:disabled) {
+      box-shadow: inset 0 1px 0 0 #4a67a2;
+      cursor: pointer;
+      background-color: #385082;
+      background-image: -webkit-linear-gradient(#385082, #21396a);
+      background-image: linear-gradient(#385082, #21396a); }
+    #login-options button#facebook-login:active:not(:disabled), #login-options button#facebook-login:focus:not(:disabled) {
+      border: 1px solid #21396b;
+      box-shadow: inset 0 0 8px 4px #1e335e, inset 0 0 8px 4px #1e335e; }
+    #login-options button#facebook-login:disabled {
+      opacity: 0.5;
+      cursor: not-allowed; }
   #login-options button#facebook-register {
-    background-color: #627aad;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 20px;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0 3px;
-    font-size: 11px;
+    border: 1px solid #3c558c;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 0 0 #9ba7c1;
+    color: white;
+    display: inline-block;
+    font-size: inherit;
     font-weight: bold;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-transform: uppercase;
-    transition: 0.5s; }
-    #login-options button#facebook-register:hover {
-      background-color: #8496be;
-      color: white;
-      cursor: pointer; }
-    #login-options button#facebook-register:focus {
-      outline: none; }
-    #login-options button#facebook-register i {
-      padding-right: 5px; }
+    background-color: #627aad;
+    background-image: -webkit-linear-gradient(#627aad, #405c97);
+    background-image: linear-gradient(#627aad, #405c97);
+    padding: 7px 18px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #304b83;
+    background-clip: padding-box; }
+    #login-options button#facebook-register:hover:not(:disabled) {
+      box-shadow: inset 0 1px 0 0 #7a8bae;
+      cursor: pointer;
+      background-color: #596f9c;
+      background-image: -webkit-linear-gradient(#596f9c, #3c568b);
+      background-image: linear-gradient(#596f9c, #3c568b); }
+    #login-options button#facebook-register:active:not(:disabled), #login-options button#facebook-register:focus:not(:disabled) {
+      border: 1px solid #3c558c;
+      box-shadow: inset 0 0 8px 4px #394f80, inset 0 0 8px 4px #394f80; }
+    #login-options button#facebook-register:disabled {
+      opacity: 0.5;
+      cursor: not-allowed; }
 
 #user {
   background-color: #bb5533;
@@ -656,6 +757,7 @@ body {
   position: absolute;
   top: 400px;
   left: 5%;
+  z-index: -1;
   -webkit-animation: nemo 2s infinite, nemo-move 300s infinite;
   -moz-animation: nemo 2s infinite, nemo-move 300s infinite;
   animation: nemo 2s infinite, nemo-move 300s infinite; }

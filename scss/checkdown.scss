@@ -1,4 +1,4 @@
-@import "../bower_components/bourbon/app/assets/stylesheets/bourbon";
+@import "../bower_components/bourbon/dist/bourbon";
 @import "../bower_components/neat/app/assets/stylesheets/neat";
 
 @import "config";
@@ -100,22 +100,6 @@ body {
 		position: relative;
 }
 
-@mixin display-flex() {
-		display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-		display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
-		display: -ms-flexbox;      /* TWEENER - IE 10 */
-		display: -webkit-flex;     /* NEW - Chrome */
-		display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
-}
-
-@mixin flex($amount) {
-		-webkit-box-flex: $amount;      /* OLD - iOS 6-, Safari 3.1-6 */
-		-moz-box-flex: $amount;         /* OLD - Firefox 19- */
-		-webkit-flex: $amount;          /* Chrome */
-		-ms-flex: $amount;              /* IE 10 */
-		flex: $amount;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-}
-
 @mixin order($position) {
 		-webkit-box-ordinal-group: $position;   /* OLD - iOS 6-, Safari 3.1-6 */
 		-moz-box-ordinal-group: $position;      /* OLD - Firefox 19- */
@@ -125,7 +109,7 @@ body {
 }
 
 .container {
-		@include display-flex();
+	  @include display(flex);
 
 		width: 80%;
 		margin: 0 auto;
@@ -341,6 +325,7 @@ body {
     position: absolute;
     top: 400px;
     left: 5%;
+		z-index: -1;
 
     @include animation(nemo 2s infinite, nemo-move 300s infinite);
 }
