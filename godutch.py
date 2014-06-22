@@ -124,11 +124,11 @@ def add_user_to_group(group_id, user_id = None):
         abort(403)
 
     if not user_id:
-				try:
-						user_id = request.json['user_id']
-				except TypeError:
-						print request.json
-						abort(500)
+        try:
+            user_id = request.json['user_id']
+        except TypeError:
+            print request.json
+            abort(500)
 
     user = User.query.get(user_id)
 
@@ -152,12 +152,12 @@ def remove_user_from_group(group_id, user_id = None):
         abort(403)
 
     if not user_id:
-				try:
-						user_id = request.json['user_id']
-				except TypeError:
-						print request.json
-						print request
-						abort(500)
+        try:
+            user_id = request.json['user_id']
+        except TypeError:
+            print request.json
+            print request
+            abort(500)
 
     user = User.query.get(user_id)
 
@@ -237,23 +237,6 @@ def debt(debt_id, group_id = None):
 def user_in_group(user, group):
     return True
 
-# @app.route('/users/<user_id>', methods=['GET', 'PUT', 'DELETE'])
-# @facebook_auth
-# def get_user(user_id):
-#     user = User.query.get(user_id)
-#     if request.method == 'GET':
-#         return user.json()
-#     elif request.method == 'PUT':
-#         email = request.json['email']
-#         email.strip()
-#         user.email = email
-#         db.session.commit()
-#         return user.json()
-#     elif request.method == 'DELETE':
-#         print "Authentication for user deletion not yet implemented"
-#         abort(500)
-#
-
 @app.route('/user/<user_id>/debts')
 @facebook_auth
 def get_user_debts(user_id):
@@ -265,28 +248,6 @@ def get_user_debts(user_id):
 def get_user_loans(user_id):
     loans = User.query.get(user_id).loans
     return json.dumps({'loans': [ loan.dictify() for loan in loans ]})
-
-# @app.route('/create/user', methods=['POST'])
-def create_user():
-    try:
-        username = request.form['username']
-        username = username.strip()
-
-        if len(username) == 0:
-            raise Exception("Failed, username empty.")
-
-        conflicts = User.query.filter_by(username=username).all()
-        if len(conflicts) > 0:
-            raise Exception("Failed, username already taken.")
-
-        new_user = User(username, None)
-        db.session.add(new_user)
-        db.session.commit()
-
-        return new_user.json()
-    except Exception as e:
-        app.logger.error(e)
-        abort(500)
 
 @app.route('/debt', methods=['POST'])
 @app.route('/group/<group_id>/debts', methods=['POST'])
