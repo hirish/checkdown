@@ -120,26 +120,25 @@ def add_user_to_group(group_id, user_id = None):
     if not group:
         abort(404)
 
-    if not g.user in group.users:
-        abort(403)
+    # if not g.user in group.users:
+    #     abort(403)
 
     if not user_id:
         try:
-            user_id = request.json['user_id']
+            user_id = request.form['user_id']
         except TypeError:
-            print request.json
             abort(500)
 
     user = User.query.get(user_id)
 
     if user in group.users:
-        abort(200)
+        return ""
 
     group.users.append(user)
 
     db.session.commit()
 
-    abort(200)
+    return ""
 
 @app.route('/group/<group_id>/users', methods=['DELETE'])
 @facebook_auth
@@ -153,22 +152,20 @@ def remove_user_from_group(group_id, user_id = None):
 
     if not user_id:
         try:
-            user_id = request.json['user_id']
+            user_id = request.form['user_id']
         except TypeError:
-            print request.json
-            print request
             abort(500)
 
     user = User.query.get(user_id)
 
     if not (user in group.users):
-        abort(204)
+        return ""
 
     group.users.remove(user)
 
     db.session.commit()
 
-    abort(204)
+    return ""
 
 
 ################################################################################
@@ -191,65 +188,6 @@ def get_debts(group_id):
     debts = group.debts
     return jsonify(debts = [ debt.dictify() for debt in debts ])
 
-@app.route('/debts/<debt_id>', methods=['GET', 'PUT', 'DELETE'])
-@facebook_auth
-def debt(debt_id, group_id = None):
-    debt = Debt.query.get(debt_id)
-    if request.method == 'GET':
-        return debt.json()
-
-    elif request.method == 'PUT':
-        lender = User.query.get(request.json['lender']['id'])
-        debtor = User.query.get(request.json['debtor']['id'])
-
-        if not(user_in_group(lender, group_id) and user_in_group(debtor, group_id)):
-            print "Users not in group", lender, debtor, group_id
-            abort(500)
-
-        if lender.id == debtor.id:
-            print "Users identical"
-            abort(500)
-
-        amount = request.json['amount']
-
-        if not amount > 0:
-            print "Amount not > 0"
-            abort(500)
-
-        description = request.json['description'].strip()[:300]
-
-        debt.debtor = debtor
-        debt.lender = lender
-        debt.amount = amount
-        debt.description = description
-        debt.paid = request.json['paid']
-
-        db.session.commit()
-
-        return ""
-
-    elif request.method == 'DELETE':
-        print "Implement access control"
-        db.session.delete(debt)
-        db.session.commit()
-        return ""
-
-def user_in_group(user, group):
-    return True
-
-@app.route('/user/<user_id>/debts')
-@facebook_auth
-def get_user_debts(user_id):
-    debts = User.query.get(user_id).debts
-    return json.dumps({'debts': [ debt.dictify() for debt in debts ]})
-
-@app.route('/user/<user_id>/loans')
-@facebook_auth
-def get_user_loans(user_id):
-    loans = User.query.get(user_id).loans
-    return json.dumps({'loans': [ loan.dictify() for loan in loans ]})
-
-@app.route('/debt', methods=['POST'])
 @app.route('/group/<group_id>/debts', methods=['POST'])
 @facebook_auth
 def create_debt(group_id = None):
