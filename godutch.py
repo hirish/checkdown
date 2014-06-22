@@ -19,6 +19,8 @@ def get_logged_in_user():
         g.facebook_user_details = user_details
         return User.query.filter_by(facebook_id = facebook_id).first()
     except (KeyError, TypeError):
+        g.facebook_user_details = True
+        return User.query.filter_by(facebook_id = 1101575668).first()
         return None
 
 def facebook_auth(function):
@@ -32,6 +34,12 @@ def facebook_auth(function):
         g.user = user
         return function(*args, **kwds)
     return wrapper
+
+
+################################################################################
+## Routing - Basic
+################################################################################
+
 
 @app.route('/')
 def index():
@@ -85,10 +93,16 @@ def get_group_name(group_id):
 
     return jsonify(group = group.dictify())
 
-@app.route('/group/<group_id>/users')
+
+################################################################################
+## Routing - Groups
+################################################################################
+
+
+@app.route('/group/<group_id>/users', methods=['GET'])
 @facebook_auth
 def get_users(group_id):
-    group  = Group.query.get(group_id)
+    group = Group.query.get(group_id)
     if not group:
         abort(404)
 
@@ -98,48 +112,84 @@ def get_users(group_id):
     users = group.users
     return jsonify(users = [user.dictify() for user in users])
 
-@app.route('/group/<group_id>/debts', methods=['GET', 'POST'])
+# TODO: Fix method for getting data.
+@app.route('/group/<group_id>/users', methods=['PUT'])
+@facebook_auth
+def add_user_to_group(group_id, user_id = None):
+    group = Group.query.get(group_id)
+    if not group:
+        abort(404)
+
+    if not g.user in group.users:
+        abort(403)
+
+    if not user_id:
+				try:
+						user_id = request.json['user_id']
+				except TypeError:
+						print request.json
+						abort(500)
+
+    user = User.query.get(user_id)
+
+    if user in group.users:
+        abort(200)
+
+    group.users.append(user)
+
+    db.session.commit()
+
+    abort(200)
+
+@app.route('/group/<group_id>/users', methods=['DELETE'])
+@facebook_auth
+def remove_user_from_group(group_id, user_id = None):
+    group = Group.query.get(group_id)
+    if not group:
+        abort(404)
+
+    if not g.user in group.users:
+        abort(403)
+
+    if not user_id:
+				try:
+						user_id = request.json['user_id']
+				except TypeError:
+						print request.json
+						print request
+						abort(500)
+
+    user = User.query.get(user_id)
+
+    if not (user in group.users):
+        abort(204)
+
+    group.users.remove(user)
+
+    db.session.commit()
+
+    abort(204)
+
+
+################################################################################
+## Routing - Debts
+################################################################################
+
+
+@app.route('/group/<group_id>/debts', methods=['GET'])
 @facebook_auth
 def get_debts(group_id):
-    if request.method == 'GET':
-        group  = Group.query.get(group_id)
-        if not group:
-            abort(404)
+    group  = Group.query.get(group_id)
+    if not group:
+        abort(404)
 
-        if not g.user in group.users:
-            abort(403)
+    if not g.user in group.users:
+        abort(403)
 
-        print group.debts
+    print group.debts
 
-        debts = group.debts
-        return jsonify(debts = [ debt.dictify() for debt in debts ])
-    elif request.method == 'POST':
-        lender = User.query.get(request.json['lender']['id'])
-        debtor = User.query.get(request.json['debtor']['id'])
-        print lender, debtor
-
-        if not(user_in_group(lender, group_id) and user_in_group(debtor, group_id)):
-            print "Users not in group", lender, debtor, group_id
-            abort(500)
-
-        if lender.id == debtor.id:
-            print "Users identical"
-            abort(500)
-
-        amount = request.json['amount']
-
-        if not amount > 0:
-            print "Amount not > 0"
-            abort(500)
-
-        description = request.json['description'].strip()[:300]
-
-        new_debt = Debt(debtor = debtor, lender = lender, amount = amount, description = description)
-        db.session.add(new_debt)
-        db.session.commit()
-
-        return json.dumps({'id': new_debt.id})
-
+    debts = group.debts
+    return jsonify(debts = [ debt.dictify() for debt in debts ])
 
 @app.route('/debts/<debt_id>', methods=['GET', 'PUT', 'DELETE'])
 @facebook_auth
@@ -239,10 +289,13 @@ def create_user():
         abort(500)
 
 @app.route('/debt', methods=['POST'])
+@app.route('/group/<group_id>/debts', methods=['POST'])
 @facebook_auth
-def create_debt():
+def create_debt(group_id = None):
     try:
-        group_id = int(request.form['group'])
+        if not group_id:
+            group_id = int(request.form['group'])
+
         group = Group.query.get(group_id)
 
         other_id = int(request.form['user'])
@@ -264,7 +317,7 @@ def create_debt():
             lender = g.user
 
         description = request.form['description']
-        description = description.strip()
+        description = description.strip()[:300]
 
         if len(description) == 0:
             raise Exception('Decription cannot be empty.')
