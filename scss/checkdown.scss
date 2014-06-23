@@ -8,6 +8,9 @@
 @import "sky";
 @import "forms";
 
+@import "components/userList.scss";
+@import "components/settings.scss";
+
 
 // Login/Main page switching.
 body {
@@ -53,6 +56,7 @@ table {
         .fa-times {
             color: #a22;
             cursor: pointer;
+            margin-top: 3px;
         }
 
     }
@@ -68,15 +72,6 @@ table {
     overflow:hidden;
     transition: 1s;
 
-    img {
-        float: left;
-        margin-top: 12px;
-        margin-right: 10px;
-        border-radius: 3px;
-        width: 30px;
-        height: 30px;
-    }
-
     .payment {
         text-align: center;
         margin-bottom: 10px;
@@ -88,8 +83,13 @@ table {
     }
 
     &.closed {
-        max-height: 50px !important;
+        max-height: 56px !important;
     }
+
+    .fa-minus, .fa-plus {
+        margin-top: 3px;
+    }
+
 }
 
 #logo { margin: 50px 0; }

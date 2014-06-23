@@ -18,7 +18,7 @@ gulp.task 'coffee', ->
 
 gulp.task 'watch', ->
   gulp.watch 'coffee/*.coffee', ['coffee']
-  gulp.watch 'scss/*.scss', ['scss']
+  gulp.watch 'scss/**/*.scss', ['scss']
 
 
 gulp.task 'default', ['scss', 'coffee', 'watch']

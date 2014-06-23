@@ -4,39 +4,11 @@
   box-sizing: border-box; }
 
 @-webkit-keyframes inputError {}
-@-webkit-keyframes clouds {
-  0%, 100% {
-    -webkit-transform: translateX(-50px); }
-
-  50% {
-    -webkit-transform: translateX(2000px); } }
-@-webkit-keyframes ship {
-  0%, 100% {
-    -webkit-transform: rotate(-1deg); }
-
-  50% {
-    -webkit-transform: rotate(4deg); } }
-@-webkit-keyframes login {
-  0%, 40%, 44%, 100% {
-    -webkit-transform: rotate(0deg); }
-
-  41% {
-    -webkit-transform: rotate(-3deg); }
-
-  43% {
-    -webkit-transform: rotate(3deg); } }
-@-webkit-keyframes nemo {
-  0%, 100% {
-    -webkit-transform: rotate(-6deg); }
-
-  50% {
-    -webkit-transform: rotate(-2deg); } }
-@-webkit-keyframes nemo-move {
-  from {
-    left: -5%; }
-
-  to {
-    left: 105%; } }
+@-webkit-keyframes clouds {}
+@-webkit-keyframes ship {}
+@-webkit-keyframes login {}
+@-webkit-keyframes nemo {}
+@-webkit-keyframes nemo-move {}
 @-webkit-keyframes loggedin-login {
   0% {
     margin-left: 0;
@@ -172,39 +144,11 @@ body {
   font-size: 10px; }
 
 @-webkit-keyframes inputError {}
-@-webkit-keyframes clouds {
-  0%, 100% {
-    -webkit-transform: translateX(-50px); }
-
-  50% {
-    -webkit-transform: translateX(2000px); } }
-@-webkit-keyframes ship {
-  0%, 100% {
-    -webkit-transform: rotate(-1deg); }
-
-  50% {
-    -webkit-transform: rotate(4deg); } }
-@-webkit-keyframes login {
-  0%, 40%, 44%, 100% {
-    -webkit-transform: rotate(0deg); }
-
-  41% {
-    -webkit-transform: rotate(-3deg); }
-
-  43% {
-    -webkit-transform: rotate(3deg); } }
-@-webkit-keyframes nemo {
-  0%, 100% {
-    -webkit-transform: rotate(-6deg); }
-
-  50% {
-    -webkit-transform: rotate(-2deg); } }
-@-webkit-keyframes nemo-move {
-  from {
-    left: -5%; }
-
-  to {
-    left: 105%; } }
+@-webkit-keyframes clouds {}
+@-webkit-keyframes ship {}
+@-webkit-keyframes login {}
+@-webkit-keyframes nemo {}
+@-webkit-keyframes nemo-move {}
 @-webkit-keyframes loggedin-login {
   0% {
     margin-left: 0;
@@ -307,39 +251,11 @@ body {
     left: 50%; }
 
 @-webkit-keyframes inputError {}
-@-webkit-keyframes clouds {
-  0%, 100% {
-    -webkit-transform: translateX(-50px); }
-
-  50% {
-    -webkit-transform: translateX(2000px); } }
-@-webkit-keyframes ship {
-  0%, 100% {
-    -webkit-transform: rotate(-1deg); }
-
-  50% {
-    -webkit-transform: rotate(4deg); } }
-@-webkit-keyframes login {
-  0%, 40%, 44%, 100% {
-    -webkit-transform: rotate(0deg); }
-
-  41% {
-    -webkit-transform: rotate(-3deg); }
-
-  43% {
-    -webkit-transform: rotate(3deg); } }
-@-webkit-keyframes nemo {
-  0%, 100% {
-    -webkit-transform: rotate(-6deg); }
-
-  50% {
-    -webkit-transform: rotate(-2deg); } }
-@-webkit-keyframes nemo-move {
-  from {
-    left: -5%; }
-
-  to {
-    left: 105%; } }
+@-webkit-keyframes clouds {}
+@-webkit-keyframes ship {}
+@-webkit-keyframes login {}
+@-webkit-keyframes nemo {}
+@-webkit-keyframes nemo-move {}
 @-webkit-keyframes loggedin-login {
   0% {
     margin-left: 0;
@@ -414,6 +330,44 @@ select {
   flex: 1;
   z-index: 2;
   background-color: transparent; }
+.createDebt .who {
+  -webkit-box-flex: 2;
+  -moz-box-flex: 2;
+  box-flex: 2;
+  -webkit-flex: 2;
+  -moz-flex: 2;
+  -ms-flex: 2;
+  flex: 2; }
+.createDebt .create-button {
+  display: block; }
+
+.userList {
+  width: 100%;
+  padding: 10px 0; }
+  .userList:last-child {
+    margin-bottom: 15px; }
+  .userList:hover {
+    color: black; }
+  .userList em {
+    color: #999;
+    font-style: normal; }
+  .userList img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    vertical-align: middle;
+    border-radius: 3px; }
+
+.settings input {
+  margin-bottom: 15px; }
+.settings input[type=radio] {
+  margin-left: 10px;
+  margin-right: 5px; }
+.settings label {
+  margin-right: 10px;
+  margin-top: 5px; }
+.settings div {
+  margin-bottom: 10px; }
 
 body {
   background-color: #004444;
@@ -452,7 +406,8 @@ table {
       width: 80px; }
     table td .fa-times, table th .fa-times {
       color: #a22;
-      cursor: pointer; }
+      cursor: pointer;
+      margin-top: 3px; }
 
 .card {
   background-color: white;
@@ -462,13 +417,6 @@ table {
   border-radius: 5px;
   overflow: hidden;
   transition: 1s; }
-  .card img {
-    float: left;
-    margin-top: 12px;
-    margin-right: 10px;
-    border-radius: 3px;
-    width: 30px;
-    height: 30px; }
   .card .payment {
     text-align: center;
     margin-bottom: 10px; }
@@ -476,7 +424,9 @@ table {
     display: none;
     margin-bottom: 30px; }
   .card.closed {
-    max-height: 50px !important; }
+    max-height: 56px !important; }
+  .card .fa-minus, .card .fa-plus {
+    margin-top: 3px; }
 
 #logo {
   margin: 50px 0; }

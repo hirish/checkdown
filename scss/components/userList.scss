@@ -1,0 +1,27 @@
+.userList {
+
+    width: 100%;
+    padding: 10px 0;
+
+    &:last-child {
+      margin-bottom: 15px;
+    }
+
+    &:hover {
+      color: black;
+    }
+
+    em {
+      color: #999;
+      font-style: normal;
+    }
+
+    img {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+      vertical-align: middle;
+      border-radius: 3px;
+    }
+
+}

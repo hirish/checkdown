@@ -39,7 +39,8 @@ Debts = Backbone.Collection.extend
         return new Debts @filter (debt) ->
           debt.get('debtor_id') is user.id
 
-    groupIs: (groupId) ->
+    groupIs: (group) ->
+        groupId = group.get 'id'
         return new Debts @filter (debt) ->
           debt.get('group_id') is groupId
 
@@ -95,13 +96,16 @@ Application = React.createClass
             @forceUpdate()
 
     selectGroup: (id) ->
-        @setState selectedGroup: id
+        group = @props.groups.get id
+        @setState selectedGroup: group
 
-    createDebt: (debt) ->
-        $.post '/debt', debt
-          .done ->
-              console.log "Posted"
+    createDebt: (debt, callback) ->
+        $.post "/group/#{@state.selectedGroup.get 'id'}/debts", debt
+          .done (response) =>
+              @props.debts.add(new Debt JSON.parse response)
+              callback()
           .fail ->
+              alert "For some reason, we failed to create this debt. Sorry!"
               console.log "Failed"
 
     render: ->
@@ -110,7 +114,17 @@ Application = React.createClass
         selectedGroup = 
             if @state.selectedGroup? then @state.selectedGroup
             else if userDebts.length > 0
-                userDebts.models[0].get('group_id')
+                group_id = userDebts.models[0].get('group_id')
+                @props.groups.get group_id
+            else null
+
+        @state.selectedGroup = selectedGroup
+
+        selectedGroupUsers =
+            if selectedGroup?
+                group_id = selectedGroup.get 'id'
+                @props.users.filter (user) ->
+                    group_id in user.get 'groups'
             else null
 
         debts =
@@ -127,7 +141,7 @@ Application = React.createClass
                 <div className="container">
                   <GroupList groups={this.props.groups} selectedGroup={selectedGroup} selectGroup={this.selectGroup} />
                   <DebtList debts={debts} user={this.props.user} users={this.props.users} />
-                  <RightPanel createDebt={this.createDebt} selectedGroup={selectedGroup} />
+                  <RightPanel createDebt={this.createDebt} selectedGroup={selectedGroup} selectedGroupUsers={selectedGroupUsers} />
                 </div>
             </div>`
 
@@ -144,7 +158,7 @@ GroupList = React.createClass
     render: ->
         groups =
             @props.groups.map (group) =>
-                selected = if group.get('id') is @props.selectedGroup then 'selected' else ''
+                selected = if group is @props.selectedGroup then 'selected' else ''
                 select = this.select
 
                 `<li key={group.get('id')} className={selected} onClick={select} data-group={group.get('id')}>
@@ -200,7 +214,8 @@ DebtView = React.createClass
     getInitialState: ->
         open: @props.open or false
 
-    componentDidMount: ->
+    recalculateHeight: ->
+        return if not @refs.card
         card = $ @refs.card.getDOMNode()
 
         if not card.hasClass 'closed'
@@ -214,6 +229,8 @@ DebtView = React.createClass
             setTimeout (-> card.css 'transition', '1s'), 1
             card.css 'max-height', height
 
+    componentDidMount: -> @recalculateHeight()
+
     toggleOpen: ->
         @setState open: (not @state.open)
 
@@ -224,7 +241,7 @@ DebtView = React.createClass
         total = credits.totalAmount() - debits.totalAmount()
 
         if total is 0
-            return ``
+            return `<div></div>`
 
         titleText =
             if total > 0
@@ -247,7 +264,9 @@ DebtView = React.createClass
                     else
                         '+ '
 
-                `<tr>
+                key = debt.get 'id'
+
+                `<tr key={key}>
                     <td>10/01/2014</td>
                     <td>{sign} <Price amount={debt.get('amount')} currency="USD" /></td>
                     <td>{debt.get('description')}</td>
@@ -275,8 +294,18 @@ DebtView = React.createClass
         </div>`
 
 RightPanel = React.createClass
+    getInitialState: ->
+        createOpen: if @props.open? then @props.open else true
+
+    componentDidMount: ->
+        card = $ @refs.new.getDOMNode()
+
+        height = card.height()
+        card.css 'max-height', height
+
     createDebt: ->
         getValue = (x) => @refs[x].getDOMNode().value
+        resetValue = (x) => @refs[x].getDOMNode().value = ""
 
         user = getValue 'who'
         type = getValue 'type'
@@ -286,7 +315,7 @@ RightPanel = React.createClass
         debt =
             user: parseInt user
             description: description
-            group: @props.selectedGroup
+            group: @props.selectedGroup.get 'id'
             amount:
                 if (parseInt amount).toString() is "NaN"
                     0
@@ -295,16 +324,48 @@ RightPanel = React.createClass
                 else
                     0 - (parseInt amount)
 
-        @props.createDebt debt
+        callback = =>
+            @setState createOpen: false
+            setTimeout (=>
+                @setState createOpen: true
+                resetValue 'amount'
+                resetValue 'description'
+            ), 1000
+
+        @props.createDebt debt, callback
 
         return false
 
+    toggleCreateOpen: ->
+        @setState createOpen: (not @state.createOpen)
+
     render: ->
+        selectOptions = 
+            if @props.selectedGroupUsers?
+                @props.selectedGroupUsers.map (user) ->
+                  `<option value={user.get('id')}>{user.get('username')}</option>`
+            else
+                ''
+
+        groupMembers =
+            if @props.selectedGroupUsers?
+                @props.selectedGroupUsers.map (user) ->
+                    image = "/img/#{user.get('id') % 3}.png"
+                    `<div className="userList">
+                      <img src={image} className="avatar" />
+                      {user.get('username')} - <em>{user.get('email')}</em>
+                    </div>`
+            else
+                ''
+
+        cardClass  = if @state.createOpen then "card" else "closed card"
+        toggleIconClass = if @state.createOpen then "fa fa-minus" else "fa fa-plus"
+
         return `<div className="aside"><div id="user">
-            <div id="new-debt" className="card">
+            <div id="new-debt" ref="new" className={cardClass}>
                 <h3>
                     New Debt
-                    <i className="fa fa-minus"></i>
+                    <i className={toggleIconClass} onClick={this.toggleCreateOpen}></i>
                 </h3>
                 <form onSubmit={this.createDebt} className="createDebt">
                     <div>
@@ -314,10 +375,7 @@ RightPanel = React.createClass
                         </select>
                         <i className='fa fa-caret-down'></i>
 
-                        <select ref='who' className="who">
-                            <option value="1">Barnaby Jackson</option>
-                            <option value="2">Lee Woodbridge</option>
-                        </select>
+                        <select ref='who' className="who">{selectOptions}</select>
                         <i className='fa fa-caret-down'></i>
 
                         <input ref='amount' name="amount" type="text" placeholder="Amount" className="amount" />
@@ -332,13 +390,32 @@ RightPanel = React.createClass
                     </div>
                 </form>
             </div>
+            <Settings />
             <div className="card">
-                <h3>
-                    Group Members
-                    <i className="fa fa-plus"></i>
-                </h3>
+                <h3>Group Members</h3>
+                {groupMembers}
             </div>
         </div></div>`
+
+Settings = React.createClass
+    componentDidMount: ->
+        $(@refs.paidCutoffDate.getDOMNode()).mask '99 / 99 / 9999'
+
+    render: ->
+        `<div className="card settings">
+            <h3>Settings</h3>
+            <div>Show paid debts from:</div>
+            <div>
+                <input type="radio" name="paidCutoff" checked="true" />
+                <label>Never</label>
+
+                <input type="radio" name="paidCutoff" />
+                <label>
+                  <input type="text" placeholder="MM / DD / YYYY" ref="paidCutoffDate" />
+                </label>
+            </div>
+        </div>`
+
 
 Price = React.createClass
   render: ->
@@ -376,13 +453,13 @@ facebookLoginCallback = (response) ->
     groups.on 'add', (group) =>
         id = group.get('id')
 
-        $.getJSON "/group/#{id}/debts", (response) =>
-            for debt in response.debts
-                debts.add new Debt debt
+        $.getJSON "/group/#{id}/debts", (response) ->
+            returned_debts = _.map response.debts, (debt) -> new Debt debt
+            debts.add returned_debts
 
-        $.getJSON "/group/#{id}/users", (response) =>
-            for user in response.users
-                users.add new User user
+        $.getJSON "/group/#{id}/users", (response) ->
+            returned_users = _.map response.users, (user) -> new User user
+            users.add returned_users
 
     $.getJSON '/user', (response) ->
         user = new User response.user

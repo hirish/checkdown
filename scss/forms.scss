@@ -48,4 +48,13 @@ select {
       z-index: 2;
       background-color: transparent;
     }
+
+    .who {
+      @include flex(2);
+    }
+
+    .create-button {
+      display: block;
+    }
+
 }
