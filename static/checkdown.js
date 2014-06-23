@@ -351,6 +351,11 @@ RightPanel = React.createClass({displayName: 'RightPanel',
     type = getValue('type');
     amount = getValue('amount');
     description = getValue('description');
+    amount = Math.round(parseFloat(amount.replace(/[^0-9.]/g, '')) * 100);
+    if (isNaN(amount)) {
+      console.error("OMG that's not a number");
+      return false;
+    }
     debt = {
       user: parseInt(user),
       description: description,

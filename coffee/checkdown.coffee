@@ -312,6 +312,17 @@ RightPanel = React.createClass
         amount = getValue 'amount'
         description = getValue 'description'
 
+        # Process amount
+        # Removes non numeric (or '.') characters
+        # Turns it into a float
+        # Turns it into cents
+        # Rounds
+        # Fails if it's not still a number
+        amount = Math.round(parseFloat(amount.replace(/[^0-9.]/g, ''))*100)
+        if isNaN amount
+            console.error "OMG that's not a number"
+            return false
+
         debt =
             user: parseInt user
             description: description
