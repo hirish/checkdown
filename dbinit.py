@@ -26,12 +26,12 @@ magic.users = [barn, henry, fred, nick]
 edgeb.users = [barn, henry]
 bernal.users = [lee, ben, matt]
 
-db.session.add(Debt(henry, barn, magic, 1500, 'Sushi bill'))
-db.session.add(Debt(henry, barn, magic, 2600, 'Bloodhound'))
-db.session.add(Debt(barn, henry, magic, 260, 'Bloodhound'))
-db.session.add(Debt(fred, henry, magic, 2600, 'Bloodhound'))
-db.session.add(Debt(fred, barn, magic, 2600, 'Bloodhound'))
-db.session.add(Debt(henry, barn, edgeb, 1700, 'Gas & Electric'))
-db.session.add(Debt(barn, henry, edgeb, 3251, 'Comcast'))
+db.session.add(Debt(henry, barn, magic, 1500, 'Sushi bill', False, datetime.datetime(2014,5,19)))
+db.session.add(Debt(henry, barn, magic, 2600, 'Bloodhound', False, datetime.datetime(2014,5,30)))
+db.session.add(Debt(barn, henry, magic, 260, 'Bloodhound', False, datetime.datetime(2014,6,11)))
+db.session.add(Debt(fred, henry, magic, 2600, 'Bloodhound', False, datetime.datetime(2014,6,15)))
+db.session.add(Debt(fred, barn, magic, 2600, 'Bloodhound', False, datetime.datetime(2014,6,19)))
+db.session.add(Debt(henry, barn, edgeb, 1700, 'Gas & Electric', True, datetime.datetime(2014,6,21)))
+db.session.add(Debt(barn, henry, edgeb, 3251, 'Comcast', False, datetime.datetime(2014,6,23)))
 
 db.session.commit()

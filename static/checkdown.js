@@ -99,7 +99,11 @@ Debts = Backbone.Collection.extend({
   },
   totalAmount: function() {
     return this.reduce((function(x, y) {
-      return x + y.get('amount');
+      if (y.get('paid')) {
+        return x;
+      } else {
+        return x + y.get('amount');
+      }
     }), 0);
   }
 });
@@ -115,7 +119,10 @@ Groups = Backbone.Collection.extend({
 Application = React.createClass({displayName: 'Application',
   getInitialState: function() {
     return {
-      selectedGroup: null
+      selectedGroup: null,
+      settings: {
+        paidCutoffDate: null
+      }
     };
   },
   componentWillMount: function() {
@@ -148,6 +155,11 @@ Application = React.createClass({displayName: 'Application',
       return console.log("Failed");
     });
   },
+  updateSettings: function(settings) {
+    return this.setState({
+      settings: settings
+    });
+  },
   render: function() {
     var debts, group_id, selectedGroup, selectedGroupUsers, titleText, userDebts;
     userDebts = this.props.debts.userInvolved(this.props.user);
@@ -161,9 +173,21 @@ Application = React.createClass({displayName: 'Application',
     return React.DOM.div(null, 
                 TitleText( {text:titleText} ),
                 React.DOM.div( {className:"container"}, 
-                  GroupList( {groups:this.props.groups, selectedGroup:selectedGroup, selectGroup:this.selectGroup} ),
-                  DebtList( {debts:debts, user:this.props.user, users:this.props.users} ),
-                  RightPanel( {createDebt:this.createDebt, selectedGroup:selectedGroup, selectedGroupUsers:selectedGroupUsers} )
+                  GroupList(
+                    {groups:this.props.groups,
+                    selectedGroup:selectedGroup,
+                    selectGroup:this.selectGroup} ),
+                  DebtList(
+                    {debts:debts,
+                    user:this.props.user,
+                    users:this.props.users,
+                    settings:this.state.settings} ),
+                  RightPanel(
+                    {createDebt:this.createDebt,
+                    selectedGroup:selectedGroup,
+                    selectedGroupUsers:selectedGroupUsers,
+                    settings:this.state.settings,
+                    updateSettings:this.updateSettings} )
                 )
             );
   }
@@ -221,9 +245,10 @@ DebtList = React.createClass({displayName: 'DebtList',
     var debts, first;
     debts = this.props.debts.length > 0 ? (first = true, _.map(this.props.debts.groupByUsers(this.props.user), (function(_this) {
       return function(debts, userId) {
-        var groupId, key, open, otherUser, user;
+        var groupId, key, open, otherUser, settings, user;
         otherUser = _this.props.users.get(userId);
         user = _this.props.user;
+        settings = _this.props.settings;
         groupId = _this.props.debts.models[0].get('group_id');
         key = "" + groupId + "." + userId;
         if (first) {
@@ -232,7 +257,13 @@ DebtList = React.createClass({displayName: 'DebtList',
         } else {
           open = false;
         }
-        return DebtView( {key:key, user:user, otherUser:otherUser, debts:debts, open:open} );
+        return DebtView(
+                        {key:key,
+                        user:user,
+                        otherUser:otherUser,
+                        debts:debts,
+                        open:open,
+                        settings:settings} );
       };
     })(this))) : React.DOM.h2(null, "There are no debts");
     return React.DOM.div( {className:"debtList"}, React.DOM.div( {id:"details"}, debts));
@@ -290,11 +321,17 @@ DebtView = React.createClass({displayName: 'DebtView',
     toggleIconClass = this.state.open ? "fa fa-minus" : "fa fa-plus";
     debtRows = this.props.debts.map((function(_this) {
       return function(debt) {
-        var key, sign;
-        sign = debt.get('debtor_id') === _this.props.user.id ? '– ' : '+ ';
+        var key, lineStyle, sign;
         key = debt.get('id');
-        return React.DOM.tr( {key:key}, 
-                    React.DOM.td(null, "10/01/2014"),
+        if ((_this.props.settings.paidCutoffDate == null) || (_this.props.settings.paidCutoffDate > Date.parse(debt.get('created')))) {
+          if (debt.get('paid')) {
+            return React.DOM.tr( {key:key} );
+          }
+        }
+        lineStyle = debt.get('paid') ? "paid" : "";
+        sign = debt.get('debtor_id') === _this.props.user.id ? '– ' : '+ ';
+        return React.DOM.tr( {key:key, className:lineStyle}, 
+                    React.DOM.td(null, debt.get('created')),
                     React.DOM.td(null, sign, " ", Price( {amount:debt.get('amount'), currency:"USD"} )),
                     React.DOM.td(null, debt.get('description')),
                     React.DOM.td(null, React.DOM.i( {className:"fa fa-times"}))
@@ -387,12 +424,14 @@ RightPanel = React.createClass({displayName: 'RightPanel',
   render: function() {
     var cardClass, groupMembers, selectOptions, toggleIconClass;
     selectOptions = this.props.selectedGroupUsers != null ? this.props.selectedGroupUsers.map(function(user) {
-      return React.DOM.option( {value:user.get('id')}, user.get('username'));
+      return React.DOM.option( {value:user.get('id'), key:"select." + user.get('username')}, 
+                      user.get('username')
+                  );
     }) : '';
     groupMembers = this.props.selectedGroupUsers != null ? this.props.selectedGroupUsers.map(function(user) {
       var image;
       image = "/img/" + (user.get('id') % 3) + ".png";
-      return React.DOM.div( {className:"userList"}, 
+      return React.DOM.div( {className:"userList", key:"member." + user.get('username')}, 
                       React.DOM.img( {src:image, className:"avatar"} ),
                       user.get('username'), " - ", React.DOM.em(null, user.get('email'))
                     );
@@ -428,7 +467,7 @@ RightPanel = React.createClass({displayName: 'RightPanel',
                     )
                 )
             ),
-            Settings(null ),
+            Settings( {settings:this.props.settings, updateSettings:this.props.updateSettings} ),
             React.DOM.div( {className:"card"}, 
                 React.DOM.h3(null, "Group Members"),
                 groupMembers
@@ -441,17 +480,33 @@ Settings = React.createClass({displayName: 'Settings',
   componentDidMount: function() {
     return $(this.refs.paidCutoffDate.getDOMNode()).mask('99 / 99 / 9999');
   },
+  updatePaidCutoff: function(never) {
+    return (function(_this) {
+      return function() {
+        var newCutoff, settings;
+        newCutoff = Date.parse(_this.refs.paidCutoffDate.getDOMNode().value);
+        settings = _this.props.settings;
+        settings.paidCutoffDate = never || isNaN(newCutoff) ? null : newCutoff;
+        return _this.props.updateSettings(settings);
+      };
+    })(this);
+  },
+  focusOnCutoff: function() {
+    return $(this.refs.paidCutoffDate.getDOMNode()).focus();
+  },
   render: function() {
+    var neverPaid;
+    neverPaid = this.props.settings.paidCutoffDate != null;
     return React.DOM.div( {className:"card settings"}, 
             React.DOM.h3(null, "Settings"),
             React.DOM.div(null, "Show paid debts from:"),
             React.DOM.div(null, 
-                React.DOM.input( {type:"radio", name:"paidCutoff", checked:"true"} ),
-                React.DOM.label(null, "Never"),
+                React.DOM.input( {type:"radio", name:"paidCutoff", checked:!neverPaid, onChange:this.updatePaidCutoff(true)} ),
+                React.DOM.label(null, "Never ever"),
 
-                React.DOM.input( {type:"radio", name:"paidCutoff"} ),
+                React.DOM.input( {type:"radio", name:"paidCutoff", checked:neverPaid, onChange:this.focusOnCutoff} ),
                 React.DOM.label(null, 
-                  React.DOM.input( {type:"text", placeholder:"MM / DD / YYYY", ref:"paidCutoffDate"} )
+                  React.DOM.input( {type:"text", placeholder:"MM / DD / YYYY", ref:"paidCutoffDate", onKeyUp:this.updatePaidCutoff(false)} )
                 )
             )
         );

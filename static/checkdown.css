@@ -369,6 +369,9 @@ select {
 .settings div {
   margin-bottom: 10px; }
 
+html {
+  overflow-y: scroll; }
+
 body {
   background-color: #004444;
   padding: 0px;
@@ -408,6 +411,8 @@ table {
       color: #a22;
       cursor: pointer;
       margin-top: 3px; }
+  table .paid td {
+    color: #999; }
 
 .card {
   background-color: white;

@@ -74,7 +74,9 @@ Debts = Backbone.Collection.extend
         return grouped
 
     totalAmount: ->
-        @reduce ((x, y) -> x + y.get('amount')), 0
+        @reduce ((x, y) ->
+            if y.get('paid') then x else x + y.get('amount')
+        ), 0
 
 Groups = Backbone.Collection.extend
     model: Group
@@ -87,6 +89,8 @@ Groups = Backbone.Collection.extend
 Application = React.createClass
     getInitialState: ->
         selectedGroup: null
+        settings:
+            paidCutoffDate: null
 
     componentWillMount: ->
         @props.groups.on 'add remove', =>
@@ -107,6 +111,9 @@ Application = React.createClass
           .fail ->
               alert "For some reason, we failed to create this debt. Sorry!"
               console.log "Failed"
+
+    updateSettings: (settings) ->
+        @setState settings: settings
 
     render: ->
         userDebts = @props.debts.userInvolved @props.user
@@ -139,9 +146,21 @@ Application = React.createClass
         return `<div>
                 <TitleText text={titleText} />
                 <div className="container">
-                  <GroupList groups={this.props.groups} selectedGroup={selectedGroup} selectGroup={this.selectGroup} />
-                  <DebtList debts={debts} user={this.props.user} users={this.props.users} />
-                  <RightPanel createDebt={this.createDebt} selectedGroup={selectedGroup} selectedGroupUsers={selectedGroupUsers} />
+                  <GroupList
+                    groups={this.props.groups}
+                    selectedGroup={selectedGroup}
+                    selectGroup={this.selectGroup} />
+                  <DebtList
+                    debts={debts}
+                    user={this.props.user}
+                    users={this.props.users}
+                    settings={this.state.settings} />
+                  <RightPanel
+                    createDebt={this.createDebt}
+                    selectedGroup={selectedGroup}
+                    selectedGroupUsers={selectedGroupUsers}
+                    settings={this.state.settings}
+                    updateSettings={this.updateSettings} />
                 </div>
             </div>`
 
@@ -167,7 +186,7 @@ GroupList = React.createClass
                 </li>`
 
 
-        return `<div className="groupList"><div id="overview">
+        `<div className="groupList"><div id="overview">
             <ul>
                 <h2>Combined</h2>
                 <li>
@@ -193,7 +212,8 @@ DebtList = React.createClass
                 first = true
                 _.map @props.debts.groupByUsers(@props.user), (debts, userId) =>
                     otherUser = @props.users.get(userId)
-                    user = this.props.user
+                    user = @props.user
+                    settings = @props.settings
                     groupId = @props.debts.models[0].get('group_id')
 
                     key = "#{groupId}.#{userId}"
@@ -204,7 +224,13 @@ DebtList = React.createClass
                     else
                         open = false
 
-                    `<DebtView key={key} user={user} otherUser={otherUser} debts={debts} open={open} />`
+                    `<DebtView
+                        key={key}
+                        user={user}
+                        otherUser={otherUser}
+                        debts={debts}
+                        open={open}
+                        settings={settings} />`
             else
                 `<h2>There are no debts</h2>`
 
@@ -258,16 +284,22 @@ DebtView = React.createClass
 
         debtRows =
             @props.debts.map (debt) =>
+                key = debt.get 'id'
+
+                if (not @props.settings.paidCutoffDate?) or
+                   (@props.settings.paidCutoffDate > Date.parse(debt.get 'created'))
+                    if debt.get 'paid' then return `<tr key={key} />`
+
+                lineStyle = if debt.get 'paid' then "paid" else ""
+
                 sign =
                     if debt.get('debtor_id') is @props.user.id
                         '– '
                     else
                         '+ '
 
-                key = debt.get 'id'
-
-                `<tr key={key}>
-                    <td>10/01/2014</td>
+                `<tr key={key} className={lineStyle}>
+                    <td>{debt.get('created')}</td>
                     <td>{sign} <Price amount={debt.get('amount')} currency="USD" /></td>
                     <td>{debt.get('description')}</td>
                     <td><i className="fa fa-times"></i></td>
@@ -354,7 +386,9 @@ RightPanel = React.createClass
         selectOptions = 
             if @props.selectedGroupUsers?
                 @props.selectedGroupUsers.map (user) ->
-                  `<option value={user.get('id')}>{user.get('username')}</option>`
+                  `<option value={user.get('id')} key={"select." + user.get('username')}>
+                      {user.get('username')}
+                  </option>`
             else
                 ''
 
@@ -362,7 +396,7 @@ RightPanel = React.createClass
             if @props.selectedGroupUsers?
                 @props.selectedGroupUsers.map (user) ->
                     image = "/img/#{user.get('id') % 3}.png"
-                    `<div className="userList">
+                    `<div className="userList" key={"member." + user.get('username')}>
                       <img src={image} className="avatar" />
                       {user.get('username')} - <em>{user.get('email')}</em>
                     </div>`
@@ -401,7 +435,7 @@ RightPanel = React.createClass
                     </div>
                 </form>
             </div>
-            <Settings />
+            <Settings settings={this.props.settings} updateSettings={this.props.updateSettings} />
             <div className="card">
                 <h3>Group Members</h3>
                 {groupMembers}
@@ -412,17 +446,31 @@ Settings = React.createClass
     componentDidMount: ->
         $(@refs.paidCutoffDate.getDOMNode()).mask '99 / 99 / 9999'
 
+    updatePaidCutoff: (never) ->
+        =>
+            newCutoff = Date.parse @refs.paidCutoffDate.getDOMNode().value
+
+            settings = @props.settings
+            settings.paidCutoffDate = if never or isNaN(newCutoff) then null else newCutoff
+
+            @props.updateSettings settings
+
+    focusOnCutoff: ->
+        $(@refs.paidCutoffDate.getDOMNode()).focus()
+
     render: ->
+        neverPaid = @props.settings.paidCutoffDate?
+
         `<div className="card settings">
             <h3>Settings</h3>
             <div>Show paid debts from:</div>
             <div>
-                <input type="radio" name="paidCutoff" checked="true" />
-                <label>Never</label>
+                <input type="radio" name="paidCutoff" checked={!neverPaid} onChange={this.updatePaidCutoff(true)} />
+                <label>Never ever</label>
 
-                <input type="radio" name="paidCutoff" />
+                <input type="radio" name="paidCutoff" checked={neverPaid} onChange={this.focusOnCutoff} />
                 <label>
-                  <input type="text" placeholder="MM / DD / YYYY" ref="paidCutoffDate" />
+                  <input type="text" placeholder="MM / DD / YYYY" ref="paidCutoffDate" onKeyUp={this.updatePaidCutoff(false)} />
                 </label>
             </div>
         </div>`

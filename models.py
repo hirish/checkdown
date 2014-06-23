@@ -1,5 +1,6 @@
 from config import db
 import json
+import datetime
 
 groups = db.Table('groups',
     db.Column('group_id', db.Integer, db.ForeignKey('group.id')),
@@ -85,13 +86,17 @@ class Debt(db.Model):
 
     description = db.Column(db.String(300))
 
-    def __init__(self, debtor, lender, group, amount, description):
+    def __init__(self, debtor, lender, group, amount, description, paid=False, created=None):
+        if not created:
+            created = datetime.datetime.utcnow()
+
         self.debtor = debtor
         self.lender = lender
         self.group = group
         self.amount = amount
         self.description = description
-        self.paid = False
+        self.created = created
+        self.paid = paid
 
     def dictify(self):
         return {
@@ -101,7 +106,7 @@ class Debt(db.Model):
             'group_id': self.group.id,
             'amount' : self.amount,
             'paid' : self.paid,
-            'created' : str(self.created),
+            'created' : str(self.created.date()),
             'description' : self.description,
         }
 
