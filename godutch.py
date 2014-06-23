@@ -115,7 +115,7 @@ def get_users(group_id):
 # TODO: Fix method for getting data.
 @app.route('/group/<group_id>/users', methods=['PUT'])
 @facebook_auth
-def add_user_to_group(group_id, user_id = None):
+def add_user_to_group(group_id, user_email = None):
     group = Group.query.get(group_id)
     if not group:
         abort(404)
@@ -123,13 +123,18 @@ def add_user_to_group(group_id, user_id = None):
     # if not g.user in group.users:
     #     abort(403)
 
-    if not user_id:
+    if not user_email:
         try:
-            user_id = request.form['user_id']
+            user_email = request.form['user_email']
         except TypeError:
             abort(500)
 
-    user = User.query.get(user_id)
+    user = User.query.filter_by(email = user_email)
+    if user.count() == 0:
+        # Invite user
+        return ""
+    else:
+        user = user.first()
 
     if user in group.users:
         return ""
@@ -166,7 +171,6 @@ def remove_user_from_group(group_id, user_id = None):
     db.session.commit()
 
     return ""
-
 
 ################################################################################
 ## Routing - Debts
