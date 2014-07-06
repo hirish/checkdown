@@ -1,4 +1,5 @@
 from config import db
+import hashlib
 import json
 import datetime
 
@@ -36,6 +37,7 @@ class User(db.Model):
     def dictify(self):
         return {
             'id' : self.id,
+            'gravatar': hashlib.md5(self.email).hexdigest(),
             'username' : self.username,
             'email' : self.email,
             'groups' : [group.id for group in self.groups]
@@ -119,6 +121,6 @@ class Debt(db.Model):
                                               self.lender,
                                               self.amount)
         else:
-            return "[Debt: %s owes %s %i]" % (self.debtor,
+            return "[Debt: %s OWES %s %i]" % (self.debtor,
                                               self.lender,
                                               self.amount)

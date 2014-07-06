@@ -35,6 +35,56 @@ def facebook_auth(function):
         return function(*args, **kwds)
     return wrapper
 
+def resolve_user_debts(main_user, other_user):
+    '''
+    Goes through all debts between users, and tries to mark
+    debts as "paid" if they are resolved by opposite debts.
+    '''
+
+    debts = Debt.query.filter_by(debtor=main_user, lender=other_user).all()
+    loans = Debt.query.filter_by(debtor=other_user, lender=main_user).all()
+
+    add_amount = lambda total, user: total + user.amount
+
+    total_debts = reduce(add_amount, debts, 0)
+    total_loans = reduce(add_amount, loans, 0)
+
+    def set_paid(debt):
+        debt.paid = True
+
+    if total_debts > total_loans:
+        difference = total_debts - total_loans
+
+        map(set_paid, loans)
+
+        amount_paid = 0
+        for debt in debts:
+            amount_paid += debt.amount
+
+            if amount_paid < difference:
+                set_paid(debt)
+            else:
+                break
+
+    elif total_loans > total_debts:
+        difference = total_loans - total_debts
+
+        map(set_paid, debts)
+
+        amount_paid = 0
+        for loan in loans:
+            amount_paid += loan.amount
+            if amount_paid < difference:
+                set_paid(loan)
+            else:
+                break
+
+    elif total_debts == total_loans:
+        map(set_paid, loans)
+        map(set_paid, debts)
+
+    db.session.commit()
+
 
 ################################################################################
 ## Routing - Basic
