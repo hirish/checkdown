@@ -6,7 +6,7 @@ sass       = require 'gulp-ruby-sass'
 concat     = require 'gulp-concat'
 
 gulp.task 'scss', ->
-  gulp.src 'scss/checkdown.scss'
+  gulp.src 'scss/godutch.scss'
       .pipe sass()
       .pipe gulp.dest('./static/')
 
