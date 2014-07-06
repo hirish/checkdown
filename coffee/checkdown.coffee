@@ -75,7 +75,8 @@ Debts = Backbone.Collection.extend
 
     totalAmount: ->
         @reduce ((x, y) ->
-            if y.get('paid') then x else x + y.get('amount')
+            # if y.get('paid') then x else x + y.get('amount')
+            x + y.get('amount')
         ), 0
 
 Groups = Backbone.Collection.extend
@@ -148,6 +149,8 @@ Application = React.createClass
                 <div className="container">
                   <GroupList
                     groups={this.props.groups}
+                    debts={this.props.debts}
+                    user={this.props.user}
                     selectedGroup={selectedGroup}
                     selectGroup={this.selectGroup} />
                   <DebtList
@@ -157,6 +160,7 @@ Application = React.createClass
                     settings={this.state.settings} />
                   <RightPanel
                     createDebt={this.createDebt}
+                    user={this.props.user}
                     selectedGroup={selectedGroup}
                     selectedGroupUsers={selectedGroupUsers}
                     settings={this.state.settings}
@@ -185,16 +189,28 @@ GroupList = React.createClass
                     <i className='fa fa-arrow-circle-right'></i>
                 </li>`
 
+        allDebts = @props.debts.debtorIs @props.user
+        allLoans = @props.debts.lenderIs @props.user
+
+        countDebts = _.keys(allDebts.groupByUsers @props.user).length
+        countLoans = _.keys(allLoans.groupByUsers @props.user).length
+
+        countDebtsText = if countDebts is 1 then "1 Person" else "#{countDebts} People"
+        countLoansText = if countLoans is 1 then "1 Person" else "#{countLoans} People"
+
+        totalDebts = allDebts.totalAmount()
+        totalLoans = allLoans.totalAmount()
+
 
         `<div className="groupList"><div id="overview">
             <ul>
                 <h2>Combined</h2>
                 <li>
-                    3 People Owe <strong>You</strong> $10
+                    {countLoansText} People Owe <strong>You</strong> <Price amount={totalLoans} currency="USD" />
                     <i className='fa fa-arrow-circle-right'></i>
                 </li>
                 <li>
-                    <strong>You</strong> Owe 2 People $18
+                    <strong>You</strong> Owe {countDebtsText} <Price amount={totalDebts} currency="USD" />
                     <i className='fa fa-arrow-circle-right'></i>
                 </li>
                 <h2>Individual Groups</h2>
@@ -395,7 +411,7 @@ RightPanel = React.createClass
         groupMembers =
             if @props.selectedGroupUsers?
                 @props.selectedGroupUsers.map (user) ->
-                    image = "/img/#{user.get('id') % 3}.png"
+                    image = "http://gravatar.com/avatar/#{user.get('gravatar')}.png"
                     `<div className="userList" key={"member." + user.get('username')}>
                       <img src={image} className="avatar" />
                       {user.get('username')} - <em>{user.get('email')}</em>
@@ -564,4 +580,3 @@ $ ->
 
   window.f = ->
     facebookLoginCallback()
-  f()
