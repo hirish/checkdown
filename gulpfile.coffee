@@ -1,9 +1,8 @@
 gulp       = require 'gulp'
-coffee     = require 'gulp-coffee'
-gutil      = require 'gulp-util'
-react      = require 'gulp-react'
+browserify = require 'gulp-browserify'
+rename     = require 'gulp-rename'
 sass       = require 'gulp-ruby-sass'
-concat     = require 'gulp-concat'
+plumber    = require 'gulp-plumber'
 
 gulp.task 'scss', ->
   gulp.src 'scss/godutch.scss'
@@ -11,14 +10,16 @@ gulp.task 'scss', ->
       .pipe gulp.dest('./static/')
 
 gulp.task 'coffee', ->
-  gulp.src 'coffee/*.coffee'
-    .pipe coffee({bare:true, header: false}).on('error', gutil.log)
-    .pipe react()
+  gulp.src 'coffee/godutch.coffee', read: false
+    .pipe plumber()
+    .pipe browserify
+        transform: ['coffeeify', 'reactify/undoubted']
+        extensions: ['*.coffee']
+    .pipe rename 'godutch.js'
     .pipe gulp.dest('./static')
 
 gulp.task 'watch', ->
-  gulp.watch 'coffee/*.coffee', ['coffee']
+  gulp.watch 'coffee/**/*.coffee', ['coffee']
   gulp.watch 'scss/**/*.scss', ['scss']
-
 
 gulp.task 'default', ['scss', 'coffee', 'watch']
