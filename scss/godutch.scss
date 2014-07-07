@@ -170,11 +170,10 @@ body {
 }
 
 #main, #login {
-		width: 100%;
+    width: 100%;
     margin: 0;
     overflow: hidden;
     max-height: 100000px;
-		padding-bottom: 80px;
 
     z-index: 100;
     transition: 1s;
@@ -333,7 +332,8 @@ body {
     position: absolute;
     top: 400px;
     left: 5%;
-		z-index: -1;
+    z-index: -1;
+    display: none;
 
     @include animation(nemo 2s infinite, nemo-move 300s infinite);
 }
