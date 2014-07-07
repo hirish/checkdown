@@ -1,22 +1,22 @@
 @import "config";
 @import "animations";
 
-@mixin cloud($top, $z-index, $delay) {
+@mixin cloud($top, $z-index, $left) {
     @include animation(clouds 720s linear infinite);
-		@include animation-delay($delay);
 
-		top: $top;
-		z-index: $z-index;
+        top: $top;
+        left: $left;
+        z-index: $z-index;
 
-		position: absolute;
-		box-shadow: 0px 1px 0 rgba(0,0,0,0.1);
-		opacity: 0.9;
+        position: absolute;
+        box-shadow: 0px 1px 0 rgba(0,0,0,0.1);
+        opacity: 0.9;
 }
 
 @mixin gull($top, $left) {
-		position: absolute;
-		top: $top;
-		left: $left;
+        position: absolute;
+        top: $top;
+        left: $left;
 }
 
 #swell {
@@ -48,10 +48,10 @@
         z-index: 25;
     }
 
-    .cloud1 { @include cloud(10px, 10, -250s); }
-    .cloud2 { @include cloud(30px, 20, -20s); }
-    .cloud3 { @include cloud(10px, 20, -120s); }
-    .cloud4 { @include cloud(50px, 10, -300s); }
+    .cloud1 { @include cloud(10px, 10, 20%); }
+    .cloud2 { @include cloud(30px, 20, 5%); }
+    .cloud3 { @include cloud(10px, 20, 40%); }
+    .cloud4 { @include cloud(50px, 10, 77%); }
 
     .gulls1{ @include gull(30px, 20%); }
     .gulls2{ @include gull(80px, 50%); }
