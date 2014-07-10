@@ -1,10 +1,7 @@
 {TitleText} = require './titletext.coffee'
 {GroupList} = require './grouplist.coffee'
 {DebtList} = require './debtlist.coffee'
-{DebtView} = require './debtview.coffee'
 {RightPanel} = require './rightpanel.coffee'
-{Settings} = require './settings.coffee'
-{Price} = require './utils/price.coffee'
 
 Application = React.createClass
     getInitialState: ->

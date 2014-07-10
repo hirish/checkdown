@@ -4,13 +4,6 @@
 {Debt, Debts} = require './models/debt.coffee'
 {User, Users} = require './models/user.coffee'
 {Application} = require './views/application.coffee'
-{TitleText} = require './views/titletext.coffee'
-{Price} = require './views/utils/price.coffee'
-{GroupList} = require './views/grouplist.coffee'
-{DebtList} = require './views/debtlist.coffee'
-{DebtView} = require './views/debtview.coffee'
-{RightPanel} = require './views/rightpanel.coffee'
-{Settings} = require './views/settings.coffee'
 
 facebookLoginCallback = (response) ->
 
