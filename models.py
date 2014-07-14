@@ -83,6 +83,8 @@ class Debt(db.Model):
 
     description = db.Column(db.String(300))
 
+    archived = db.Column(db.Boolean)
+
     def __init__(self, debtor, lender, amount, description, paid=False, created=None):
         if not created:
             created = datetime.datetime.utcnow()
@@ -93,6 +95,7 @@ class Debt(db.Model):
         self.description = description
         self.created = created
         self.paid = paid
+        self.archived = False
 
     def dictify(self):
         return {

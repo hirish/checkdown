@@ -231,6 +231,7 @@ def remove_user_from_group(group_id, user_id = None):
 @facebook_auth
 def get_debts():
     debts = g.user.debts + g.user.loans
+    debts = filter((lambda debt: not debt.archived), debts)
     return jsonify(debts = [ debt.dictify() for debt in debts ])
 
 @app.route('/debts', methods=['POST'])
@@ -270,6 +271,23 @@ def create_debt():
     except Exception as e:
         app.logger.error(e)
         abort(500)
+
+@app.route('/debts/{debt_id}', methods=['DELETE'])
+@facebook_auth
+def delete(debt_id):
+    debt = Debt.query.get(debt_id)
+
+    if debt == None:
+        abort(404)
+
+    if not (debt.debtor == g.user or debt.lender == g.user):
+        abort(403)
+
+    debt.archived = True
+
+    db.session.commit()
+
+    return "success"
 
 @app.errorhandler(404)
 @app.errorhandler(500)
