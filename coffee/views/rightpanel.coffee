@@ -91,7 +91,7 @@ RightPanel = React.createClass
     render: ->
         selectOptions = []
 
-        selectOptions.push `<option disabled>Users</option>`
+        selectOptions.push `<option disabled key='select.user'>Users</option>`
 
         @props.users.each (user) =>
             if user isnt @props.user
@@ -101,7 +101,7 @@ RightPanel = React.createClass
                     </option>`
                 )
 
-        selectOptions.push `<option disabled>Groups</option>`
+        selectOptions.push `<option disabled key='select.groups'>Groups</option>`
 
         @props.groups.each (group) =>
             selectOptions.push(
