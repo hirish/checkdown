@@ -14,10 +14,6 @@ facebookLoginCallback = (response) ->
     groups.on 'add', (group) =>
         id = group.get('id')
 
-        $.getJSON "/group/#{id}/debts", (response) ->
-            returned_debts = _.map response.debts, (debt) -> new Debt debt
-            debts.add returned_debts
-
         $.getJSON "/group/#{id}/users", (response) ->
             returned_users = _.map response.users, (user) -> new User user
             users.add returned_users
@@ -30,6 +26,9 @@ facebookLoginCallback = (response) ->
             $.getJSON "/group/#{id}", (response) =>
                 groups.add(new Group response.group)
 
+        $.getJSON "/debts", (response) ->
+            returned_debts = _.map response.debts, (debt) -> new Debt debt
+            debts.add returned_debts
 
         window.app = React.renderComponent Application(user: user, users: users, groups: groups, debts: debts), $('#main')[0], ->
             setTimeout (->$('body').addClass 'logged-in'), 50

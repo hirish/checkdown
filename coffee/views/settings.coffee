@@ -19,16 +19,10 @@ Settings = React.createClass
 
         `<div className="card settings">
             <h3>Settings</h3>
-            <div>Show paid debts from:</div>
-            <div>
-                <input type="radio" name="paidCutoff" checked={!neverPaid} onChange={this.updatePaidCutoff(true)} />
-                <label>Never ever</label>
-
-                <input type="radio" name="paidCutoff" checked={neverPaid} onChange={this.focusOnCutoff} />
-                <label>
-                  <input type="text" placeholder="MM / DD / YYYY" ref="paidCutoffDate" onKeyUp={this.updatePaidCutoff(false)} />
-                </label>
-            </div>
+                <div>
+                    Show debts from:
+                    <input type="text" placeholder="MM / DD / YYYY" ref="paidCutoffDate" onKeyUp={this.updatePaidCutoff(false)} />
+                </div>
         </div>`
 
 module.exports = {Settings}

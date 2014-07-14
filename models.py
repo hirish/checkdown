@@ -53,9 +53,6 @@ class Group(db.Model):
     __table__name = 'group'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
-    debts = db.relationship('Debt',
-                            backref='group',
-                            foreign_keys='Debt.group_id')
 
     def __init__(self, name):
         self.name = name
@@ -77,8 +74,6 @@ class Debt(db.Model):
     debtor_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     lender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
-
     # Stored as no. cents
     amount = db.Column(db.Integer)
 
@@ -88,13 +83,12 @@ class Debt(db.Model):
 
     description = db.Column(db.String(300))
 
-    def __init__(self, debtor, lender, group, amount, description, paid=False, created=None):
+    def __init__(self, debtor, lender, amount, description, paid=False, created=None):
         if not created:
             created = datetime.datetime.utcnow()
 
         self.debtor = debtor
         self.lender = lender
-        self.group = group
         self.amount = amount
         self.description = description
         self.created = created
@@ -105,7 +99,6 @@ class Debt(db.Model):
             'id' : self.id,
             'debtor_id' : self.debtor.id,
             'lender_id' : self.lender.id,
-            'group_id': self.group.id,
             'amount' : self.amount,
             'paid' : self.paid,
             'created' : str(self.created.date()),

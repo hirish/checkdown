@@ -1,52 +1,33 @@
 {Price} = require './utils/price.coffee'
 
-GroupList = React.createClass
+LeftPane = React.createClass
     select: (e) ->
         $target = $ e.currentTarget
-        groupId = $target.data 'group'
-        @props.selectGroup groupId
+        userId = $target.data 'user'
+        @props.selectUser userId
 
     render: ->
-        groups =
-            @props.groups.map (group) =>
-                selected = if group is @props.selectedGroup then 'selected' else ''
+        users =
+            @props.users.map (user) =>
+                if user is @props.user then return
+                if @props.debts.userInvolved(user).length is 0 then return
+
+                selected = if user is @props.selectedUser then 'selected' else ''
                 select = this.select
 
-                `<li key={group.get('id')} className={selected} onClick={select} data-group={group.get('id')}>
-                    {group.get('name')}
+                `<li key={user.get('id')} className={selected} onClick={select} data-user={user.get('id')}>
+                    {user.get('username')}
                     <i className='fa fa-arrow-circle-right'></i>
                 </li>`
 
-        allDebts = @props.debts.debtorIs @props.user
-        allLoans = @props.debts.lenderIs @props.user
-
-        countDebts = _.keys(allDebts.groupByUsers @props.user).length
-        countLoans = _.keys(allLoans.groupByUsers @props.user).length
-
-        countDebtsText = if countDebts is 1 then "1 Person" else "#{countDebts} People"
-        countLoansText = if countLoans is 1 then "1 Person" else "#{countLoans} People"
-
-        totalDebts = allDebts.totalAmount()
-        totalLoans = allLoans.totalAmount()
-
-
         `<div className="groupList"><div id="overview">
             <ul>
-                <h2>Combined</h2>
-                <li>
-                    {countLoansText} People Owe <strong>You</strong> <Price amount={totalLoans} currency="USD" />
-                    <i className='fa fa-arrow-circle-right'></i>
-                </li>
-                <li>
-                    <strong>You</strong> Owe {countDebtsText} <Price amount={totalDebts} currency="USD" />
-                    <i className='fa fa-arrow-circle-right'></i>
-                </li>
-                <h2>Individual Groups</h2>
-                {groups}
+                <h2>Outstanding</h2>
+                {users}
                 <li className="add" onClick={this.select}>
                     <i className='fa fa-plus'></i>
                 </li>
             </ul>
         </div></div>`
 
-module.exports = {GroupList}
+module.exports = {LeftPane}

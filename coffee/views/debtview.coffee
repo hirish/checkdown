@@ -50,9 +50,9 @@ DebtView = React.createClass
             @props.debts.map (debt) =>
                 key = debt.get 'id'
 
-                if (not @props.settings.paidCutoffDate?) or
+                if (@props.settings.paidCutoffDate?) and
                    (@props.settings.paidCutoffDate > Date.parse(debt.get 'created'))
-                    if debt.get 'paid' then return `<tr key={key} />`
+                    return `<tr key={key} />`
 
                 lineStyle = if debt.get 'paid' then "paid" else ""
 

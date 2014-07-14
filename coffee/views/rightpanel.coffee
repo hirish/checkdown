@@ -11,72 +11,104 @@ RightPanel = React.createClass
         card.css 'max-height', height
 
     createDebt: ->
-        getValue = (x) => @refs[x].getDOMNode().value
-        resetValue = (x) => @refs[x].getDOMNode().value = ""
+        try
+            resetForm = _.once =>
+                @setState createOpen: false
+                setTimeout (=>
+                    @setState createOpen: true
+                    resetValue 'amount'
+                    resetValue 'description'
+                ), 1000
 
-        user = getValue 'who'
-        type = getValue 'type'
-        amount = getValue 'amount'
-        description = getValue 'description'
+            getValue = (x) => @refs[x].getDOMNode().value
+            resetValue = (x) => @refs[x].getDOMNode().value = ""
 
-        # Process amount
-        # Removes non numeric (or '.') characters
-        # Turns it into a float
-        # Turns it into cents
-        # Rounds
-        # Fails if it's not still a number
-        amount = Math.round(parseFloat(amount.replace(/[^0-9.]/g, ''))*100)
-        if isNaN amount
-            console.error "OMG that's not a number"
-            return false
+            debtor = getValue 'who'
+            type = getValue 'type'
+            amount = getValue 'amount'
+            description = getValue 'description'
 
-        debt =
-            user: parseInt user
-            description: description
-            group: @props.selectedGroup.get 'id'
-            amount:
-                if (parseInt amount).toString() is "NaN"
-                    0
-                else if type is 'charge'
-                    parseInt amount
+            # Process debtor; could be user or group
+            s = debtor.split ":"
+            debtorType = s[0]
+
+            if not (debtorType in ['user', 'group'])
+                console.error "Unknown debtor type", debtorType
+                return false
+
+            debtorId = parseInt s[1]
+            if not debtorId?
+                console.error "No debtor ID"
+                return false
+
+            debtorIds =
+                if debtorType is 'user' then [debtorId]
                 else
-                    0 - (parseInt amount)
+                    users = @props.users
+                        .filter (user) ->
+                            debtorId in user.get 'groups'
+                    _(users).pluck 'id'
 
-        callback = =>
-            @setState createOpen: false
-            setTimeout (=>
-                @setState createOpen: true
-                resetValue 'amount'
-                resetValue 'description'
-            ), 1000
+            # Process amount
+            # Removes non numeric (or '.') characters
+            # Turns it into a float
+            # Turns it into cents
+            # Rounds
+            # Fails if it's not still a number
+            amount = Math.round(parseFloat(amount.replace(/[^0-9.]/g, ''))*100)
+            if isNaN amount
+                console.error "OMG that's not a number"
+                return false
 
-        @props.createDebt debt, callback
+            if debtorType is 'group'
+                amount = parseInt(amount/debtorIds.length)
 
-        return false
+            _.each debtorIds, (user) =>
+                console.log user
+                if user isnt @props.user.get 'id'
+                    debt =
+                        user: parseInt user
+                        description: description
+                        amount:
+                            if (parseInt amount).toString() is "NaN"
+                                0
+                            else if type is 'charge'
+                                parseInt amount
+                            else
+                                0 - (parseInt amount)
+
+                    @props.createDebt debt, resetForm
+
+        catch e
+            window.e = e
+            console.error e
+        finally
+            return false
 
     toggleCreateOpen: ->
         @setState createOpen: (not @state.createOpen)
 
     render: ->
-        selectOptions = 
-            if @props.selectedGroupUsers?
-                @props.selectedGroupUsers.map (user) ->
-                  `<option value={user.get('id')} key={"select." + user.get('username')}>
-                      {user.get('username')}
-                  </option>`
-            else
-                ''
+        selectOptions = []
 
-        groupMembers =
-            if @props.selectedGroupUsers?
-                @props.selectedGroupUsers.map (user) ->
-                    image = "http://gravatar.com/avatar/#{user.get('gravatar')}.png"
-                    `<div className="userList" key={"member." + user.get('username')}>
-                      <img src={image} className="avatar" />
-                      {user.get('username')} - <em>{user.get('email')}</em>
-                    </div>`
-            else
-                ''
+        selectOptions.push `<option disabled>Users</option>`
+
+        @props.users.each (user) =>
+            if user isnt @props.user
+                selectOptions.push(
+                    `<option value={"user:" + user.get('id')} key={"select.user." + user.get('username')}>
+                      {user.get('username')}
+                    </option>`
+                )
+
+        selectOptions.push `<option disabled>Groups</option>`
+
+        @props.groups.each (group) =>
+            selectOptions.push(
+                `<option value={"group:" + group.get('id')} key={"select.group." + group.get('name')}>
+                  {group.get('name')}
+                </option>`
+            )
 
         cardClass  = if @state.createOpen then "card" else "closed card"
         toggleIconClass = if @state.createOpen then "fa fa-minus" else "fa fa-plus"
@@ -111,10 +143,6 @@ RightPanel = React.createClass
                 </form>
             </div>
             <Settings settings={this.props.settings} updateSettings={this.props.updateSettings} />
-            <div className="card">
-                <h3>Group Members</h3>
-                {groupMembers}
-            </div>
         </div></div>`
 
 module.exports = {RightPanel}

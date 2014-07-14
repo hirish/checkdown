@@ -227,30 +227,16 @@ def remove_user_from_group(group_id, user_id = None):
 ################################################################################
 
 
-@app.route('/group/<group_id>/debts', methods=['GET'])
+@app.route('/debts', methods=['GET'])
 @facebook_auth
-def get_debts(group_id):
-    group  = Group.query.get(group_id)
-    if not group:
-        abort(404)
-
-    if not g.user in group.users:
-        abort(403)
-
-    print group.debts
-
-    debts = group.debts
+def get_debts():
+    debts = g.user.debts + g.user.loans
     return jsonify(debts = [ debt.dictify() for debt in debts ])
 
-@app.route('/group/<group_id>/debts', methods=['POST'])
+@app.route('/debts', methods=['POST'])
 @facebook_auth
-def create_debt(group_id = None):
+def create_debt():
     try:
-        if not group_id:
-            group_id = int(request.form['group'])
-
-        group = Group.query.get(group_id)
-
         other_id = int(request.form['user'])
         other = User.query.get(other_id)
 
@@ -275,7 +261,7 @@ def create_debt(group_id = None):
         if len(description) == 0:
             raise Exception('Decription cannot be empty.')
 
-        new_debt = Debt(debtor, lender, group, amount, description)
+        new_debt = Debt(debtor, lender, amount, description)
 
         db.session.add(new_debt)
         db.session.commit()
@@ -294,4 +280,4 @@ def fail(error):
     return render_template('error.html', error=error.code, colour=colour), error.code
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", port=80)
