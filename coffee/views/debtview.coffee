@@ -1,4 +1,5 @@
 {Price} = require './utils/price.coffee'
+{Payment} = require './payment.coffee'
 
 DebtView = React.createClass
     getInitialState: ->
@@ -83,10 +84,6 @@ DebtView = React.createClass
                 </tr>
                 {debtRows}
             </table>
-            <div className="payment">
-                <button className="green"><i className="fa fa-check"></i>Pay All <Price amount={Math.abs(total)} currency="USD" /></button>
-                <button>Pay Other</button>
-            </div>
         </div>`
 
 module.exports = {DebtView}
